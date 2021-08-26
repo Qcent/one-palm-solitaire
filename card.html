@@ -1,0 +1,736 @@
+<html>
+<head>
+<title>Four's Company</title>
+
+
+<link rel="apple-touch-icon" href="palm.ico"/>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
+<meta name="viewport" content = "width = device-width; initial-scale=0.5; maximum-scale=0.5; user-scalable=1; ">
+
+
+
+<script type="text/javascript" src="onepalm.js"></script>
+
+
+
+<style type="text/css">
+
+.playingcard {border:1px dashed #BCC; width:220px; height:300px; background:#EDEDED; cursor:pointer;}
+
+.suitbox { font-size:48px; line-height:25px; height:300px; width:220px; text-align: center;}
+
+.face { font-size:80px; }
+.ace { font-size:110px; }
+
+
+.heart 	 { color:#a01609; }
+.diamond { color:#0c296d; }
+.club 	 { color:#0c6d19; }
+.spade	 { color:#111111; }
+
+
+
+.flag {	
+	font-size:30px;		text-align:center;	line-height:25px;
+	width:25px;		position:absolute;	left:10px;	top:15px;}
+
+.reverseflag {	
+		font-size:30px;	text-align:center;	line-height:25px;
+		width:25px;	position:absolute;	left:182px; top:238px;	    
+		-ms-transform: rotate(180deg); /* IE 9 */
+   		-webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+    		transform: rotate(180deg);}
+
+
+.cardsindeckticker{position:absolute;	left:10px; top:562px;}
+.cardsinspreadticker{position:absolute;	left:300px; top:562px;}
+
+
+.playablemoves{padding:7px; font-family:arial; font-size:18px; color:#000000; position:absolute; right:40px; top:40px;}
+.playedmoves{font-family:arial; font-size:18px; color:#000000; position:absolute; right:40px; top:140px;}
+
+.scorebox{font-family:arial; font-size:25px; color:#0000FF; position:absolute; left:50px; top:140px;}
+#multo {font-family:arial; font-size:18px; color:#ffcc00; }
+
+
+#winning {font-family:arial; font-size:32px; font-weight:bold; color:#ffcc00; display:none;}
+#losing {font-family:arial; font-size:28px; font-weight:bold; display:none;}
+#displaytext {font-family:arial; font-size:18px; font-weight:bold; color:#000000; }
+
+.optclicker {cursor:pointer; position:absolute; right:35px; top:5px; font-family:arial; font-size:22px; font-weight:bold;}
+.optbox { 
+	position:absolute; right:35px; top:35px;
+	height:280px; width:330px; 
+	padding:7px;
+	background-color:427391; border:1px dashed #BBC;
+	font-size:20px; line-height:12px; text-align: left;
+}
+
+.gamblemode{position:absolute;	right:240px; top:10px;}
+
+
+#HA { position:absolute; left:10px; top:55px;}
+#H2 { position:absolute; left:40px; top:55px;}
+#H3 { position:absolute; left:70px; top:55px;}
+#H4 { position:absolute; left:100px; top:55px;}
+#H5 { position:absolute; left:130px; top:55px;}
+#H6 { position:absolute; left:160px; top:55px;}
+#H7 { position:absolute; left:190px; top:55px;}
+#H8 { position:absolute; left:220px; top:55px;}
+#H9 { position:absolute; left:250px; top:55px;}
+#H0 { position:absolute; left:280px; top:55px;}
+#HJ { position:absolute; left:310px; top:55px;}
+#HQ { position:absolute; left:340px; top:55px;}
+#HK { position:absolute; left:370px; top:55px;}
+
+#SA { position:absolute; left:10px; top:155px;}
+#S2 { position:absolute; left:40px; top:155px;}
+#S3 { position:absolute; left:70px; top:155px;}
+#S4 { position:absolute; left:100px; top:155px;}
+#S5 { position:absolute; left:130px; top:155px;}
+#S6 { position:absolute; left:160px; top:155px;}
+#S7 { position:absolute; left:190px; top:155px;}
+#S8 { position:absolute; left:220px; top:155px;}
+#S9 { position:absolute; left:250px; top:155px;}
+#S0 { position:absolute; left:280px; top:155px;}
+#SJ { position:absolute; left:310px; top:155px;}
+#SQ { position:absolute; left:340px; top:155px;}
+#SK { position:absolute; left:370px; top:155px;}
+
+#DA { position:absolute; left:10px; top:255px;}
+#D2 { position:absolute; left:40px; top:255px;}
+#D3 { position:absolute; left:70px; top:255px;}
+#D4 { position:absolute; left:100px; top:255px;}
+#D5 { position:absolute; left:130px; top:255px;}
+#D6 { position:absolute; left:160px; top:255px;}
+#D7 { position:absolute; left:190px; top:255px;}
+#D8 { position:absolute; left:220px; top:255px;}
+#D9 { position:absolute; left:250px; top:255px;}
+#D0 { position:absolute; left:280px; top:255px;}
+#DJ { position:absolute; left:310px; top:255px;}
+#DQ { position:absolute; left:340px; top:255px;}
+#DK { position:absolute; left:370px; top:255px;}
+
+#CA { position:absolute; left:10px; top:355px;}
+#C2 { position:absolute; left:40px; top:355px;}
+#C3 { position:absolute; left:70px; top:355px;}
+#C4 { position:absolute; left:100px; top:355px;}
+#C5 { position:absolute; left:130px; top:355px;}
+#C6 { position:absolute; left:160px; top:355px;}
+#C7 { position:absolute; left:190px; top:355px;}
+#C8 { position:absolute; left:220px; top:355px;}
+#C9 { position:absolute; left:250px; top:355px;}
+#C0 { position:absolute; left:280px; top:355px;}
+#CJ { position:absolute; left:310px; top:355px;}
+#CQ { position:absolute; left:340px; top:355px;}
+#CK { position:absolute; left:370px; top:355px;}
+
+
+</style>
+
+</head>
+<body bgcolor=#696969 onload="shuffle_deck(); ObjById('gamblecheck').checked=false;ObjById('deckcolor')[1].checked=true;ObjById('tablecolor')[0].checked=true;set_deck_color('2');set_table_color('6ABD38');" 
+ style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none; height:500px;" 
+ unselectable="on" onselectstart="return false; "  >
+
+<!--****			CARD FACES 			****-->
+<table class='playingcard heart' id='HA'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox ace'>
+	   <div class=flag>A<br>&#9829;</div>
+&#9829;
+           <div class=reverseflag>A<br>&#9829;</div>
+</td></tr>
+</table>
+
+<table class='playingcard heart' id='H2'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>2<br>&#9829;</div>
+&#9829;<br>&nbsp;<br>&nbsp;<br>&#9829;
+           <div class=reverseflag>2<br>&#9829;</div>
+</td></tr>
+</table> 
+
+<table class='playingcard heart' id='H3'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>3<br>&#9829;</div>
+&#9829;<br>&nbsp;<br>&#9829;<br>&nbsp;<br>&#9829;
+           <div class=reverseflag>3<br>&#9829;</div>
+</td></tr>
+</table>
+ 
+<table class='playingcard heart' id='H4'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>4<br>&#9829;</div>
+&#9829;&nbsp;&nbsp;&#9829;<br>
+&nbsp;<br>&nbsp;<br>
+&#9829;&nbsp;&nbsp;&#9829;
+           <div class=reverseflag>4<br>&#9829;</div>
+</td></tr>
+</table>
+
+<table class='playingcard heart' id='H5'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>5<br>&#9829;</div>
+&#9829;&nbsp;&nbsp;&#9829;<br>&nbsp;<br>
+&#9829;<br>&nbsp;<br>
+&#9829;&nbsp;&nbsp;&#9829;
+           <div class=reverseflag>5<br>&#9829;</div>
+</td></tr>
+</table>
+
+<table class='playingcard heart' id='H6'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>6<br>&#9829;</div>
+&#9829;&nbsp;&nbsp;&#9829;<br>&nbsp;<br>
+&#9829;&nbsp;&nbsp;&#9829;<br>&nbsp;<br>
+&#9829;&nbsp;&nbsp;&#9829;
+           <div class=reverseflag>6<br>&#9829;</div>
+</td></tr>
+</table>
+
+<table class='playingcard heart' id='H7'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>7<br>&#9829;</div>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829;<br>
+&nbsp;&nbsp;&#9829;&nbsp;&nbsp;<br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829;<br><br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829;
+           <div class=reverseflag>7<br>&#9829;</div>
+</td></tr>
+</table>
+
+<table class='playingcard heart' id='H8'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>8<br>&#9829;</div>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829;<br>
+&nbsp;&nbsp;&#9829;&nbsp;&nbsp;<br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829;<br>
+&nbsp;&nbsp;&#9829;&nbsp;&nbsp;<br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829;
+           <div class=reverseflag>8<br>&#9829;</div>
+</td></tr>
+</table>
+
+
+<table class='playingcard heart' id='H9'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>9<br>&#9829;</div>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829; 	<br><br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829; 	<br>
+&nbsp;&nbsp;&#9829;&nbsp;&nbsp;	<br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829;	<br><br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829; 	<br>
+           <div class=reverseflag>9<br>&#9829;</div>
+</td></tr>
+</table>
+
+<table class='playingcard heart' id='H0'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>10<br>&nbsp;&#9829;</div>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829; 	<br>
+&nbsp;&nbsp;&#9829;&nbsp;&nbsp;	<br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829; 	<br><br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829;	<br>
+&nbsp;&nbsp;&#9829;&nbsp;&nbsp;	<br>
+&#9829;&nbsp;&nbsp;&nbsp;&#9829; 	<br>
+           <div class=reverseflag>10<br>&nbsp;&#9829;</div>
+</td></tr>
+</table>
+
+<table class='playingcard heart' id='HJ'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>J<br>&#9829;</div>
+J&#9829;
+           <div class=reverseflag>J<br>&#9829;</div>
+</td></tr>
+</table>
+
+<table class='playingcard heart' id='HQ'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>Q<br>&#9829;</div>
+Q&#9829;
+           <div class=reverseflag>Q<br>&#9829;</div>
+</td></tr>
+</table>
+
+<table class='playingcard heart' id='HK'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>K<br>&#9829;</div>
+K&#9829;
+           <div class=reverseflag>K<br>&#9829;</div>
+</td></tr>
+</table>
+
+
+<table class='playingcard spade' id='SA'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox ace'>
+	   <div class=flag>A<br>&spades;</div>
+&spades;
+           <div class=reverseflag>A<br>&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard spade' id='S2'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>2<br>&spades;</div>
+&spades;<br>&nbsp;<br>&nbsp;<br>&spades;
+           <div class=reverseflag>2<br>&spades;</div>
+</td></tr>
+</table> 
+
+<table class='playingcard spade' id='S3'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>3<br>&spades;</div>
+&spades;<br>&nbsp;<br>&spades;<br>&nbsp;<br>&spades;
+           <div class=reverseflag>3<br>&spades;</div>
+</td></tr>
+</table>
+ 
+<table class='playingcard spade' id='S4'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>4<br>&spades;</div>
+&spades;&nbsp;&nbsp;&spades;<br>
+&nbsp;<br>&nbsp;<br>
+&spades;&nbsp;&nbsp;&spades;
+           <div class=reverseflag>4<br>&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard spade' id='S5'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>5<br>&spades;</div>
+&spades;&nbsp;&nbsp;&spades;<br>&nbsp;<br>
+&spades;<br>&nbsp;<br>
+&spades;&nbsp;&nbsp;&spades;
+           <div class=reverseflag>5<br>&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard spade' id='S6'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>6<br>&spades;</div>
+&spades;&nbsp;&nbsp;&spades;<br>&nbsp;<br>
+&spades;&nbsp;&nbsp;&spades;<br>&nbsp;<br>
+&spades;&nbsp;&nbsp;&spades;
+           <div class=reverseflag>6<br>&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard spade' id='S7'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>7<br>&spades;</div>
+&spades;&nbsp;&nbsp;&nbsp;&spades; 	<br>
+&nbsp;&nbsp;&spades;&nbsp;&nbsp;	<br>
+&spades;&nbsp;&nbsp;&nbsp;&spades;	<br><br>
+&spades;&nbsp;&nbsp;&nbsp;&spades;
+           <div class=reverseflag>7<br>&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard spade' id='S8'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>8<br>&spades;</div>
+&spades;&nbsp;&nbsp;&nbsp;&spades; 	<br>
+&nbsp;&nbsp;&spades;&nbsp;&nbsp;	<br>
+&spades;&nbsp;&nbsp;&nbsp;&spades;	<br>
+&nbsp;&nbsp;&spades;&nbsp;&nbsp;	<br>
+&spades;&nbsp;&nbsp;&nbsp;&spades;
+           <div class=reverseflag>8<br>&spades;</div>
+</td></tr>
+</table>
+
+
+<table class='playingcard spade' id='S9'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>9<br>&spades;</div>
+&spades;&nbsp;&nbsp;&nbsp;&spades; 	<br><br>
+&spades;&nbsp;&nbsp;&nbsp;&spades; 	<br>
+&nbsp;&nbsp;&spades;&nbsp;&nbsp;	<br>
+&spades;&nbsp;&nbsp;&nbsp;&spades;	<br><br>
+&spades;&nbsp;&nbsp;&nbsp;&spades; 	<br>
+           <div class=reverseflag>9<br>&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard spade' id='S0'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>10<br>&nbsp;&spades;</div>
+&spades;&nbsp;&nbsp;&nbsp;&spades; 	<br>
+&nbsp;&nbsp;&spades;&nbsp;&nbsp;	<br>
+&spades;&nbsp;&nbsp;&nbsp;&spades; 	<br><br>
+&spades;&nbsp;&nbsp;&nbsp;&spades;	<br>
+&nbsp;&nbsp;&spades;&nbsp;&nbsp;	<br>
+&spades;&nbsp;&nbsp;&nbsp;&spades; 	<br>
+           <div class=reverseflag>10<br>&nbsp;&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard spade' id='SJ'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>J<br>&spades;</div>
+J&spades;
+           <div class=reverseflag>J<br>&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard spade' id='SQ'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>Q<br>&spades;</div>
+Q&spades;
+           <div class=reverseflag>Q<br>&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard spade' id='SK'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>K<br>&spades;</div>
+K&spades;
+           <div class=reverseflag>K<br>&spades;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='DA'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox ace'>
+	   <div class=flag>A<br>&diams;</div>
+&diams;
+           <div class=reverseflag>A<br>&diams;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='D2'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>2<br>&diams;</div>
+&diams;<br>&nbsp;<br>&nbsp;<br>&diams;
+           <div class=reverseflag>2<br>&diams;</div>
+</td></tr>
+</table> 
+
+<table class='playingcard diamond' id='D3'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>3<br>&diams;</div>
+&diams;<br>&nbsp;<br>&diams;<br>&nbsp;<br>&diams;
+           <div class=reverseflag>3<br>&diams;</div>
+</td></tr>
+</table>
+ 
+<table class='playingcard diamond' id='D4'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>4<br>&diams;</div>
+&diams;&nbsp;&nbsp;&diams;<br>
+&nbsp;<br>&nbsp;<br>
+&diams;&nbsp;&nbsp;&diams;
+           <div class=reverseflag>4<br>&diams;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='D5'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>5<br>&diams;</div>
+&diams;&nbsp;&nbsp;&diams;<br>&nbsp;<br>
+&diams;<br>&nbsp;<br>
+&diams;&nbsp;&nbsp;&diams;
+           <div class=reverseflag>5<br>&diams;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='D6'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>6<br>&diams;</div>
+&diams;&nbsp;&nbsp;&diams;<br>&nbsp;<br>
+&diams;&nbsp;&nbsp;&diams;<br>&nbsp;<br>
+&diams;&nbsp;&nbsp;&diams;
+           <div class=reverseflag>6<br>&diams;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='D7'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>7<br>&diams;</div>
+&diams;&nbsp;&nbsp;&nbsp;&diams; 	<br>
+&nbsp;&nbsp;&diams;&nbsp;&nbsp;	<br>
+&diams;&nbsp;&nbsp;&nbsp;&diams;	<br><br>
+&diams;&nbsp;&nbsp;&nbsp;&diams;
+           <div class=reverseflag>7<br>&diams;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='D8'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>8<br>&diams;</div>
+&diams;&nbsp;&nbsp;&nbsp;&diams; 	<br>
+&nbsp;&nbsp;&diams;&nbsp;&nbsp;	<br>
+&diams;&nbsp;&nbsp;&nbsp;&diams;	<br>
+&nbsp;&nbsp;&diams;&nbsp;&nbsp;	<br>
+&diams;&nbsp;&nbsp;&nbsp;&diams;
+           <div class=reverseflag>8<br>&diams;</div>
+</td></tr>
+</table>
+
+
+<table class='playingcard diamond' id='D9'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>9<br>&diams;</div>
+&diams;&nbsp;&nbsp;&nbsp;&diams; 	<br><br>
+&diams;&nbsp;&nbsp;&nbsp;&diams; 	<br>
+&nbsp;&nbsp;&diams;&nbsp;&nbsp;	<br>
+&diams;&nbsp;&nbsp;&nbsp;&diams;	<br><br>
+&diams;&nbsp;&nbsp;&nbsp;&diams; 	<br>
+           <div class=reverseflag>9<br>&diams;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='D0'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>10<br>&nbsp;&diams;</div>
+&diams;&nbsp;&nbsp;&nbsp;&diams; 	<br>
+&nbsp;&nbsp;&diams;&nbsp;&nbsp;	<br>
+&diams;&nbsp;&nbsp;&nbsp;&diams; 	<br><br>
+&diams;&nbsp;&nbsp;&nbsp;&diams;	<br>
+&nbsp;&nbsp;&diams;&nbsp;&nbsp;	<br>
+&diams;&nbsp;&nbsp;&nbsp;&diams; 	<br>
+           <div class=reverseflag>10<br>&nbsp;&diams;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='DJ'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>J<br>&diams;</div>
+J&diams;
+           <div class=reverseflag>J<br>&diams;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='DQ'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>Q<br>&diams;</div>
+Q&diams;
+           <div class=reverseflag>Q<br>&diams;</div>
+</td></tr>
+</table>
+
+<table class='playingcard diamond' id='DK'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>K<br>&diams;</div>
+K&diams;
+           <div class=reverseflag>K<br>&diams;</div>
+</td></tr>
+</table>
+
+
+<table class='playingcard club' id='CA'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox ace'>
+	   <div class=flag>A<br>&clubs;</div>
+&clubs;
+           <div class=reverseflag>A<br>&clubs;</div>
+</td></tr>
+</table>
+
+<table class='playingcard club' id='C2'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>2<br>&clubs;</div>
+&clubs;<br>&nbsp;<br>&nbsp;<br>&clubs;
+           <div class=reverseflag>2<br>&clubs;</div>
+</td></tr>
+</table> 
+
+<table class='playingcard club' id='C3'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>3<br>&clubs;</div>
+&clubs;<br>&nbsp;<br>&clubs;<br>&nbsp;<br>&clubs;
+           <div class=reverseflag>3<br>&clubs;</div>
+</td></tr>
+</table>
+ 
+<table class='playingcard club' id='C4'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>4<br>&clubs;</div>
+&clubs;&nbsp;&nbsp;&clubs;<br>
+&nbsp;<br>&nbsp;<br>
+&clubs;&nbsp;&nbsp;&clubs;
+           <div class=reverseflag>4<br>&clubs;</div>
+</td></tr>
+</table>
+
+<table class='playingcard club' id='C5'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>5<br>&clubs;</div>
+&clubs;&nbsp;&nbsp;&clubs;<br>&nbsp;<br>
+&clubs;<br>&nbsp;<br>
+&clubs;&nbsp;&nbsp;&clubs;
+           <div class=reverseflag>5<br>&clubs;</div>
+</td></tr>
+</table>
+
+<table class='playingcard club' id='C6'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>6<br>&clubs;</div>
+&clubs;&nbsp;&nbsp;&clubs;<br>&nbsp;<br>
+&clubs;&nbsp;&nbsp;&clubs;<br>&nbsp;<br>
+&clubs;&nbsp;&nbsp;&clubs;
+           <div class=reverseflag>6<br>&clubs;</div>
+</td></tr>
+</table>
+
+<table class='playingcard club' id='C7'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>7<br>&clubs;</div>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs; 	<br>
+&nbsp;&nbsp;&clubs;&nbsp;&nbsp;	<br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs;	<br><br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs;
+           <div class=reverseflag>7<br>&clubs;</div>
+</td></tr>
+</table>
+
+<table class='playingcard club' id='C8'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>8<br>&clubs;</div>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs;<br>
+&nbsp;&nbsp;&clubs;&nbsp;&nbsp;<br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs;<br>
+&nbsp;&nbsp;&clubs;&nbsp;&nbsp;<br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs;
+	<div class=reverseflag>8<br>&clubs;</div>
+</td></tr>
+</table>
+
+
+<table class='playingcard club' id='C9'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>9<br>&clubs;</div>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs; 	<br><br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs; 	<br>
+&nbsp;&nbsp;&clubs;&nbsp;&nbsp;	<br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs;	<br><br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs; 	<br>
+           <div class=reverseflag>9<br>&clubs;</div>
+</td></tr>
+</table>
+
+<table class='playingcard club' id='C0'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class=suitbox>
+	   <div class=flag>10<br>&nbsp;&clubs;</div>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs; 	<br>
+&nbsp;&nbsp;&clubs;&nbsp;&nbsp;	<br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs; 	<br><br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs;	<br>
+&nbsp;&nbsp;&clubs;&nbsp;&nbsp;	<br>
+&clubs;&nbsp;&nbsp;&nbsp;&clubs; 	<br>
+           <div class=reverseflag>10<br>&nbsp;&clubs;</div>
+</td></tr>
+</table>
+
+<table class='playingcard club' id='CJ'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>J<br>&clubs;</div>
+J&clubs;
+           <div class=reverseflag>J<br>&clubs;</div>
+</td></tr>
+</table>
+
+<table class='playingcard club' id='CQ'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>Q<br>&clubs;</div>
+Q&clubs;
+           <div class=reverseflag>Q<br>&clubs;</div>
+</td></tr>
+</table>
+
+<table class='playingcard club' id='CK'onclick="card_click(this.id)" onmouseover="show_combo(this.id)" onmouseout="no_combo(this.id)"><tr>
+<td class='suitbox face'>
+	   <div class=flag>K<br>&clubs;</div>
+K&clubs;
+           <div class=reverseflag>K<br>&clubs;</div>
+</td></tr>
+</table>
+
+
+<!--****			END OF CARD FACES		****-->
+
+<BUTTON onclick="shuffle_deck()" style="width: 12em;  height: 4em; font-size:28px">
+<STRONG>Shuffle</STRONG></BUTTON>
+<div class=cardsindeckticker> Cards Remaining: <span id="cardsleftindeck">52</span></div>
+<div class=cardsinspreadticker> Cards in Hand: <span id="cardsleftinspread">0</span></div>
+
+<div class=scorebox>Score: <div style='display:inline-block;vertical-align:top; zIndex:1;'>
+<span id="playerscore">0</span><br><span id="multo"></span>
+<span id="winning">Winner!!!</span><span id="losing"> </span>
+<span id="displaytext"> </span>
+</div></div>
+
+<div class='gamblemode' id='gamblemode' style='display:none'> 
+Bet: <input id='gamblebet' type='text' maxlength=8 size=4 value='20' > <br>
+Cash: <span id='gamblecash' >100</span> <br>
+
+GP: <span id='gamblegames' >0</span> /
+W: <span id='gamblewins' >0</span> /
+S: <span id='gamblepushes' >0</span> <br>
+
+Avg. Payout: <span id='avpay' >0.00</span> 
+</div>
+
+
+<div class='playablemoves' id='pamov'> </div>
+
+<div class='playedmoves' id='pdmov'> </div>
+
+<div class='optclicker' id='optclicker' 
+	onclick=" javascript: 
+		var obj = document.getElementById('optbox');
+		obj.style.zIndex= CARDCOUNT+54;
+		obj.style.display = obj.style.display === 'none' ? '' : 'none';"
+>&#9881;</div>
+
+<div class='optbox' id='optbox' style="display:none">
+Options<span  style=" font-size:16px; position:absolute; right:5px;">
+<input id='gamblecheck' type='checkbox' / onclick=" javascript: 
+		var obj = document.getElementById('gamblemode');
+		obj.style.display = obj.style.display === 'none' ? '' : 'none';
+		GAMBLIN=GAMBLIN === 'false' ? 'true' : 'false';">Gamblin' Man</span><hr>
+
+Deck<br>
+<form id='deckcolor' action="" style="font-size:18px;">
+  <input type="radio" name="deckcolor" value="1" onclick="set_deck_color(this.value);"> Red/Black<br>
+  <input type="radio" name="deckcolor" value="2" onclick="set_deck_color(this.value);"> Red/Blue/Black/Green<br>
+  <input type="radio" name="deckcolor" value="3" onclick="set_deck_color(this.value);"> Custom<br>
+<span style="position:relative; left:30px; top:5px;">
+<span style='display:inline-block; text-align:center;'>
+<input id='cusdekcolor1' onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;" type='text' maxlength=6 size=4 value='ef15b9' ><br><br>
+<span class='heart' style="font-size:26px">&hearts;</span>
+</span>
+
+<span style='display:inline-block; text-align:center;'>
+<input id='cusdekcolor2' onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;" type='text' maxlength=6 size=4 value='731efc' ><br><br>
+<span class='diamond' style="font-size:26px">&diams;</span>
+</span>
+
+<span style='display:inline-block; text-align:center;'>
+<input id='cusdekcolor3' onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;" type='text' maxlength=6 size=4 value='74ef15' ><br><br>
+<span class='spade' style="font-size:26px">&spades;</span>
+</span>
+
+<span style='display:inline-block; text-align:center;'>
+<input id='cusdekcolor4' onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;" type='text' maxlength=6 size=4 value='ff6a00' ><br><br>
+<span class='club' style="font-size:26px">&clubs;</span>
+</span>
+</span>
+
+</form>
+
+Table<br>
+<form id='tablecolor' action="" style="font-size:18px;">
+  <input type="radio" name="tablecolor" value="1" onclick="set_table_color('6ABD38');" checked> Default<br>
+  <input type="radio" name="tablecolor" value="3" onclick="set_table_color(ObjById('custabcolor').value);"> Custom <input id='custabcolor' onchange="set_table_color(this.value); ObjById('tablecolor')[1].checked=true;" type='text' maxlength=6 size=4 value='a4cce3' >
+</form>
+
+<span  style="cursor:pointer; font-size:20px; position:absolute; right:5px; bottom:7px"
+onclick=" javascript: 
+		var obj = document.getElementById('optbox');
+		obj.style.display = obj.style.display === 'none' ? '' : 'none';">&#x2297; Close</span>
+</div>
+
+
+</body>
+</html>
