@@ -8,10 +8,8 @@ I tried to recreate the game some time later as a computer game.
 I never got a name for this variation of solitaire, and I'm not even sure I remembered the rules correctly. (I know I added a many extra playable moves, to make the game winnable more often.)
 
 So I named it One Palm Solitaire because in the IRL version you hold the entire deck in your hand and you
-flip cards off the top of that deck. Now, you can flip these cards down onto a table, but you can also flip them over to your other hand. \
-So I guess you _could_ call it Two Palm Solitaire. But in this digital version, you'll be using the mouse,
-and that only takes one palm to use. \
-And if you are on mobile... well play in landscape for one thing, how you hold it is up to you. \
+flip cards off the top of that deck. Now, you can flip these cards down onto a table, but you can also flip them over to your other hand. So I guess you _could_ call it Two Palm Solitaire. But in this digital version, you'll be using the mouse, and that only takes one palm to use. \
+And if you are on mobile... well play in landscape for one thing, in which hand(s) you hold it is up to you. \
 ...also, I called it Four's Company for a while.
 
 ## Game Play
@@ -31,4 +29,5 @@ I tried to give point values to the moves and even made a gambling mode, but it'
 could probably use some retooling
 
 ## Notes
-This code is one big mess and a very early example of my tinkering with JavaScript and CSS
+This code is one big mess and a very early example of my tinkering with JavaScript and CSS. 
+I used to use tables for everything.
