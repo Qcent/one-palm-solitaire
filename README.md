@@ -1,6 +1,8 @@
 # One Palm Solitaire
 This is a one player card game written in JavaScript. 
 
+![Deal me In!](app-screenshot.png)
+
 ## History
 One day, an old man I was working with at the time, 
 showed me a new form of solitaire during our lunch break. 
