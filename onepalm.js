@@ -164,25 +164,26 @@ if (spread.length >= 4){
 	else if (spread[spread.length-1].charAt(1) == spread[(spread.length-4)].charAt(1))
     	{//Split Pair
     			//Mirror Mirror
-    			if (spread[spread.length-2].charAt(1) == spread[(spread.length-3)].charAt(1))
-    			  {
-    					textOutput_moves += "Mirror Mirror <br>"
-    					score_combo[c] = 600
-    					multi4cards++;
-    			  }
-    			//THE SHOCKER
-    			else if (spread[spread.length-2].charAt(1) == spread[spread.length-1].charAt(1) || spread[(spread.length-3)].charAt(1)== spread[spread.length-1].charAt(1))
-    			  {
-    					textOutput_moves += name_of(spread[spread.length-1])+"'s Shocker \u26A1<br>"
-    					score_combo[c] = 500
-    			  }
+            if (spread[spread.length-2].charAt(1) == spread[(spread.length-3)].charAt(1))
+              {
+                    textOutput_moves += "Mirror Mirror <br>"
+                    score_combo[c] = 600
+                    multi4cards++;
+              }
+            //THE SHOCKER
+            else if (spread[spread.length-2].charAt(1) == spread[spread.length-1].charAt(1) || spread[(spread.length-3)].charAt(1)== spread[spread.length-1].charAt(1))
+              {
+                    textOutput_moves += name_of(spread[spread.length-1])+"'s Shocker \u26A1<br>"
+                    score_combo[c] = 500
+              }
     		else {
-    		textOutput_moves += "Split Pair <br>"
-    		score_combo[c] = 200	}
+                textOutput_moves += "Split Pair <br>"
+                score_combo[c] = 200
 
-    		card_combo_chain[c] = new Array(spread[spread.length-1],spread[spread.length-2],spread[spread.length-3],spread[spread.length-4])
-    		c++
-            multi4cards++; if (multi4cards>1) {score_combo[c-1]+=score_combo[c]*1.5;}
+                card_combo_chain[c] = new Array(spread[spread.length-1],spread[spread.length-2],spread[spread.length-3],spread[spread.length-4])
+                c++
+                multi4cards++; if (multi4cards>1) {score_combo[c-1]+=score_combo[c]*1.5;}
+            }
         }
         else if (spread[spread.length-4].charAt(1) == spread[(spread.length-2)].charAt(1) && spread[spread.length-4].charAt(0) == spread[(spread.length-3)].charAt(0) && spread[spread.length-2].charAt(0) == spread[(spread.length-1)].charAt(0))
     	{//Double Date
@@ -193,7 +194,6 @@ if (spread.length >= 4){
     		multi4cards++; if (multi4cards>1) {score_combo[c-1]+=score_combo[c]*1.5;}
     		c++
     	}
-
         else if (spread[spread.length-3].charAt(1) == spread[(spread.length-1)].charAt(1) && spread[spread.length-4].charAt(0) == spread[(spread.length-3)].charAt(0) && spread[spread.length-2].charAt(0) == spread[(spread.length-1)].charAt(0))
     	{//Double Date
     		textOutput_moves += "Double Date <br>" ///Sisters W/ Misters
@@ -203,6 +203,7 @@ if (spread.length >= 4){
     		multi4cards++; if (multi4cards>1) {score_combo[c-1]+=score_combo[c]*1.5;}
     		c++
     	}
+
 	if (spread[spread.length-1].charAt(0) == spread[(spread.length-4)].charAt(0))
 	{ // Split Suits
 
@@ -249,7 +250,6 @@ if (spread.length >= 4){
 
       //}
     }
-
 }
 
 if (spread.length >=3 && spread[spread.length-1].charAt(1) == spread[(spread.length-3)].charAt(1) && spread[spread.length-1].charAt(1) == spread[(spread.length-2)].charAt(1))
@@ -445,11 +445,8 @@ if(GAMBLIN && winflag )
 
 function update_stats()
 {
-
 	   ObjById("cardsleftindeck").firstChild.nodeValue=deck.length-CARDCOUNT
-
 	   ObjById("cardsleftinspread").firstChild.nodeValue=spread.length
-
 	   ObjById("playerscore").firstChild.nodeValue=parseInt(score)
 
 	if ( winflag ){document.getElementById('winning').style.display='block';}
@@ -651,6 +648,9 @@ function shuffle_deck()
 //  "DA","D2","D3","D4","D5","D6","D7","D8","D9","D0","DJ","DQ","DK",
 //  "HA","H2","H3","H4","H5","H6","H7","H8","H9","H0","HJ","HQ","HK",
 //  "SA","S2","S3","S4","S5","S6","S7","S8","S9","S0","SJ","SQ","SK" ];
+
+ // deck = [  "CA","C2","C3","C4","C5","C6","C7","C8","C9","C0","CJ","CQ","CK",  "DA","D2","D3","D4","D5","D6","D7","D8","D9","D0","DJ","DQ","DK",
+ // "HA","H2","H3","H4","H5","H6","H7","H8","H9","H0","HJ","HQ","HK",  "SA","S2","S3","S4","S5","S6","S7","S8","S9","S0","SJ","SQ","SK" ];
 /////////////////////////////////
 }
 
