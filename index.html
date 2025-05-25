@@ -1,6 +1,6 @@
 <html>
 <head>
-<title>Four's Company</title>
+<title>Deck Breaker Solitare</title>
 
 
 <link rel="apple-touch-icon" href="palm.ico"/>
@@ -9,67 +9,10 @@
 <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
 <meta name="viewport" content = "width = device-width; initial-scale=0.5; maximum-scale=0.5; user-scalable=1; ">
 
-
-
 <script type="text/javascript" src="onepalm.js"></script>
 
-
-
+<link rel="stylesheet" href="style.css">
 <style type="text/css">
-
-.playingcard {border:1px dashed #BCC; width:220px; height:300px; background:#EDEDED; cursor:pointer;}
-
-.suitbox { font-size:48px; line-height:25px; height:300px; width:220px; text-align: center;}
-
-.face { font-size:80px; }
-.ace { font-size:110px; }
-
-
-.heart 	 { color:#a01609; }
-.diamond { color:#0c296d; }
-.club 	 { color:#0c6d19; }
-.spade	 { color:#111111; }
-
-
-
-.flag {	
-	font-size:30px;		text-align:center;	line-height:25px;
-	width:25px;		position:absolute;	left:10px;	top:15px;}
-
-.reverseflag {	
-		font-size:30px;	text-align:center;	line-height:25px;
-		width:25px;	position:absolute;	left:182px; top:238px;	    
-		-ms-transform: rotate(180deg); /* IE 9 */
-   		-webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-    		transform: rotate(180deg);}
-
-
-.cardsindeckticker{position:absolute;	left:10px; top:562px;}
-.cardsinspreadticker{position:absolute;	left:300px; top:562px;}
-
-
-.playablemoves{padding:7px; font-family:arial; font-size:18px; color:#000000; position:absolute; right:40px; top:40px;}
-.playedmoves{font-family:arial; font-size:18px; color:#000000; position:absolute; right:40px; top:140px;}
-
-.scorebox{font-family:arial; font-size:25px; color:#0000FF; position:absolute; left:50px; top:140px;}
-#multo {font-family:arial; font-size:18px; color:#ffcc00; }
-
-
-#winning {font-family:arial; font-size:32px; font-weight:bold; color:#ffcc00; display:none;}
-#losing {font-family:arial; font-size:28px; font-weight:bold; display:none;}
-#displaytext {font-family:arial; font-size:18px; font-weight:bold; color:#000000; }
-
-.optclicker {cursor:pointer; position:absolute; right:35px; top:5px; font-family:arial; font-size:22px; font-weight:bold;}
-.optbox { 
-	position:absolute; right:35px; top:35px;
-	height:280px; width:330px; 
-	padding:7px;
-	background-color:427391; border:1px dashed #BBC;
-	font-size:20px; line-height:12px; text-align: left;
-}
-
-.gamblemode{position:absolute;	right:240px; top:10px;}
-
 
 #HA { position:absolute; left:10px; top:55px;}
 #H2 { position:absolute; left:40px; top:55px;}
@@ -131,7 +74,7 @@
 </style>
 
 </head>
-<body bgcolor=#696969 onload="shuffle_deck(); ObjById('gamblecheck').checked=false;ObjById('deckcolor')[1].checked=true;ObjById('tablecolor')[0].checked=true;set_deck_color('2');set_table_color('6ABD38');" 
+<body bgcolor=#696969 onload="shuffle_deck();"
  style="-moz-user-select: none; -webkit-user-select: none; -ms-user-select:none; user-select:none;-o-user-select:none; height:500px;" 
  unselectable="on" onselectstart="return false; "  >
 
@@ -649,88 +592,349 @@ K&clubs;
 
 <!--****			END OF CARD FACES		****-->
 
-<BUTTON onclick="shuffle_deck()" style="width: 12em;  height: 4em; font-size:28px">
-<STRONG>Shuffle</STRONG></BUTTON>
-<div class=cardsindeckticker> Cards Remaining: <span id="cardsleftindeck">52</span></div>
-<div class=cardsinspreadticker> Cards in Hand: <span id="cardsleftinspread">0</span></div>
+<BUTTON id="shuffle-button" onclick="shuffleClick()" ><img src="die.png" id="shuffle-icon"> Shuffle</BUTTON>
+<div class="cardsindeckticker card-count-ticker"> Cards Remaining: <span id="cardsleftindeck">52</span></div>
+<div class="cardsinspreadticker card-count-ticker"> Cards in Hand: <span id="cardsleftinspread">0</span></div>
 
-<div class=scorebox>Score: <div style='display:inline-block;vertical-align:top; zIndex:1;'>
+<div class=scorebox>Score: <div style='display:inline-block;vertical-align:top;'>
 <span id="playerscore">0</span><br><span id="multo"></span>
 <span id="winning">Winner!!!</span><span id="losing"> </span>
 <span id="displaytext"> </span>
 </div></div>
 
-<div class='gamblemode' id='gamblemode' style='display:none'> 
-Bet: <input id='gamblebet' type='text' maxlength=8 size=4 value='20' > <br>
-Cash: <span id='gamblecash' >100</span> <br>
+<div class="gamblemode" id="gambleBox">
+	<div id="gambleTitleBar" class="gamble-titlebar">Gambling Stats</div>
 
-GP: <span id='gamblegames' >0</span> /
-W: <span id='gamblewins' >0</span> /
-S: <span id='gamblepushes' >0</span> <br>
+	<div class="gamble-item bet">
+		<label for="gamblebet">Bet:</label>
+		<input id="gamblebet" type="text" maxlength="8" size="4" value="20">
+	</div>
 
-Avg. Payout: <span id='avpay' >0.00</span> 
+	<div class="gamble-item cash">
+		<span class="label">Cash:</span>
+		<span id="gamblecash">100</span>
+	</div>
+
+	<div class="gamble-item stat-group">
+		<div class="stat-sub">
+			<span class="label">Played</span>
+			<span id="gamblegames">0</span>
+		</div>
+		<div class="stat-sub">
+			<span class="label">Won</span>
+			<span id="gamblewins">0</span>
+		</div>
+		<div class="stat-sub">
+			<span class="label">Split</span>
+			<span id="gamblepushes">0</span>
+		</div>
+	</div>
+
+	<div class="gamble-item avg">
+		<span class="label">Avg. Payout:</span>
+		<span id="avpay">0.00</span>
+	</div>
+
+	<div class="gamble-item payout payout-box golden-text" id="payoutBox" style="display: none;">
+		+$<span id="payoutAmount">0</span>
+	</div>
 </div>
+
+
+
+
 
 
 <div class='playablemoves' id='pamov'> </div>
 
 <div class='playedmoves' id='pdmov'> </div>
 
-<div class='optclicker' id='optclicker' 
-	onclick=" javascript: 
-		var obj = document.getElementById('optbox');
-		obj.style.zIndex= CARDCOUNT+54;
-		obj.style.display = obj.style.display === 'none' ? '' : 'none';"
->&#9881;</div>
+<div class='optclicker' id='optclicker' onclick="toggleOptbox()">&#9881;</div>
 
 <div class='optbox' id='optbox' style="display:none">
 Options<span  style=" font-size:16px; position:absolute; right:5px;">
-<input id='gamblecheck' type='checkbox' / onclick=" javascript: 
-		var obj = document.getElementById('gamblemode');
-		obj.style.display = obj.style.display === 'none' ? '' : 'none';
-		GAMBLIN=GAMBLIN === 'false' ? 'true' : 'false';">Gamblin' Man</span><hr>
-
-Deck<br>
-<form id='deckcolor' action="" style="font-size:18px;">
+<input id='gamblecheck' type='checkbox' onclick="gamble_toggle()">Gamblin' Man</span><hr>
+	<div id="gamblin-opts">
+		Gamblin:<br>
+		<span>
+            <button id="resetStatsBtn" class="option-btn">Reset Stats</button>
+		</span>
+	</div>
+Deck:<br>
+	<label>Back Design</label>
+	<select id="cardBackPicker">
+		<option value="back-1.png">Back 1</option>
+		<option value="back-2.png">Back 2</option>
+		<option value="back-3.png">Back 3</option>
+		<option value="back-4.png">Back 4</option>
+		<option value="back-5.png">Back 5</option>
+		<option value="back-6.png">Back 6</option>
+		<option value="back-7.png">Back 7</option>
+		<option value="back-8.png">Back 8</option>
+	</select><br>
+	<label>Suit Colours</label>
+	<form id='deckcolor' action="">
   <input type="radio" name="deckcolor" value="1" onclick="set_deck_color(this.value);"> Red/Black<br>
   <input type="radio" name="deckcolor" value="2" onclick="set_deck_color(this.value);"> Red/Blue/Black/Green<br>
   <input type="radio" name="deckcolor" value="3" onclick="set_deck_color(this.value);"> Custom<br>
 <span style="position:relative; left:30px; top:5px;">
 <span style='display:inline-block; text-align:center;'>
-<input id='cusdekcolor1' onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;" type='text' maxlength=6 size=4 value='ef15b9' ><br><br>
+		<input id='cusdekcolor1' type="color" value="ef15b9"
+			   onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;">
+<br>
 <span class='heart' style="font-size:26px">&hearts;</span>
 </span>
 
 <span style='display:inline-block; text-align:center;'>
-<input id='cusdekcolor2' onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;" type='text' maxlength=6 size=4 value='731efc' ><br><br>
+	<input id='cusdekcolor2' type="color" value="731efc"
+		   onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;">
+<br>
 <span class='diamond' style="font-size:26px">&diams;</span>
 </span>
 
 <span style='display:inline-block; text-align:center;'>
-<input id='cusdekcolor3' onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;" type='text' maxlength=6 size=4 value='74ef15' ><br><br>
+	<input id='cusdekcolor3' type="color" value="74ef15"
+		   onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;">
+<br>
 <span class='spade' style="font-size:26px">&spades;</span>
 </span>
 
 <span style='display:inline-block; text-align:center;'>
-<input id='cusdekcolor4' onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;" type='text' maxlength=6 size=4 value='ff6a00' ><br><br>
+	<input id='cusdekcolor4' type="color" value="ff6a00"
+		   onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;">
+<br>
 <span class='club' style="font-size:26px">&clubs;</span>
 </span>
 </span>
 
-</form>
-
-Table<br>
-<form id='tablecolor' action="" style="font-size:18px;">
-  <input type="radio" name="tablecolor" value="1" onclick="set_table_color('6ABD38');" checked> Default<br>
-  <input type="radio" name="tablecolor" value="3" onclick="set_table_color(ObjById('custabcolor').value);"> Custom <input id='custabcolor' onchange="set_table_color(this.value); ObjById('tablecolor')[1].checked=true;" type='text' maxlength=6 size=4 value='a4cce3' >
-</form>
-
-<span  style="cursor:pointer; font-size:20px; position:absolute; right:5px; bottom:7px"
-onclick=" javascript: 
-		var obj = document.getElementById('optbox');
-		obj.style.display = obj.style.display === 'none' ? '' : 'none';">&#x2297; Close</span>
+<div class="option-row">
+	<label for="whiteBalanceSlider">White Balance</label>
+	<input type="range" id="whiteBalanceSlider" min="0" max="0.48" step="0.02" value="0.2">
 </div>
 
+
+	</form>
+
+Table:<br>
+	<label>Colour</label>
+<form id='tablecolor' action="">
+  <input type="radio" name="tablecolor" value="1" onclick="set_table_color('6ABD38');" checked> Default<br>
+  <input type="radio" name="tablecolor" value="3" onclick="set_table_color(ObjById('custabcolor').value);"> 
+	<input id='custabcolor' type="color" value="#a4cce3"
+		   onchange="set_table_color(this.value); ObjById('tablecolor')[1].checked = true; localStorage.setItem('custabcolor', this.value); localStorage.setItem('tablecolor', '3');">
+
+</form>
+
+<span id="opt-close-btn" style="cursor:pointer; font-size:20px; position:absolute; right:5px; bottom:7px"
+onclick="toggleOptbox()"><span class="inline-text-icon">&#x2297;</span> Close</span>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+
+	 // Gamblin' checkbox
+  const gambleCheck = document.getElementById("gamblecheck");
+  const gambleSaved = localStorage.getItem("GAMBLIN");
+  if (gambleSaved !== null) {
+    gambleCheck.checked = gambleSaved === "true";
+    document.getElementById("gambleBox").style.display = gambleCheck.checked ? "" : "none";
+    document.getElementById("gamblin-opts").style.display = gambleCheck.checked ? "" : "none";
+    window.GAMBLIN = gambleSaved;
+  }
+
+  // Card back picker
+  const cardBackPicker = document.getElementById("cardBackPicker");
+  const savedBack = localStorage.getItem("cardBack");
+  if (savedBack) {
+    cardBackPicker.value = savedBack;
+    window.cardBack = savedBack;
+  }
+
+  // Suit color radio
+  const savedDeckColor = localStorage.getItem("deckcolor");
+  if (savedDeckColor) {
+    const radio = document.querySelector(`#deckcolor input[value="${savedDeckColor}"]`);
+    if (radio) radio.checked = true;
+    set_deck_color(savedDeckColor);
+  }
+
+  //  Custom suit colors
+  for (let i = 1; i <= 4; i++) {
+    const key = `cusdekcolor${i}`;
+    const val = localStorage.getItem(key);
+    if (val) document.getElementById(key).value = val;
+  }
+
+  // Card texture opacity
+  const whiteBalanceSlider = document.getElementById("whiteBalanceSlider");
+  const savedOpacity = localStorage.getItem('cardWhiteBalance');
+  if (savedOpacity !== null) {
+    whiteBalanceSlider.value = savedOpacity;
+	updateCardWhiteBalance(savedOpacity);
+  }
+
+  // Table color
+  const savedTableColor = localStorage.getItem("tablecolor");
+  if (savedTableColor) {
+    const radio = document.querySelector(`#tablecolor input[value="${savedTableColor}"]`);
+    if (radio) radio.checked = true;
+
+    if (savedTableColor === "3") {
+      const customColor = localStorage.getItem("custabcolor");
+      if (customColor) {
+        document.getElementById("custabcolor").value = customColor;
+        set_table_color(customColor);
+      }
+    } else {
+      set_table_color("6ABD38"); // default
+    }
+  }
+
+       // Save GAMBLIN
+  document.getElementById("gamblecheck").addEventListener("change", function () {
+    const gamble = this.checked;
+    document.getElementById("gambleBox").style.display = gamble ? "" : "none";
+    localStorage.setItem("GAMBLIN", gamble);
+    window.GAMBLIN = gamble.toString();
+  });
+
+  // Save card back
+  document.getElementById("cardBackPicker").addEventListener("change", function () {
+    localStorage.setItem("cardBack", this.value);
+    window.cardBack = this.value;
+    set_new_deck_back();
+  });
+
+  // Save suit color selection
+  document.querySelectorAll("#deckcolor input[name='deckcolor']").forEach(input => {
+    input.addEventListener("change", function () {
+      localStorage.setItem("deckcolor", this.value);
+    });
+  });
+
+  // Save custom suit colors
+  for (let i = 1; i <= 4; i++) {
+    const id = `cusdekcolor${i}`;
+    document.getElementById(id).addEventListener("change", function () {
+      localStorage.setItem(id, this.value);
+    });
+  }
+
+  // Save table color selection
+  document.querySelectorAll("#tablecolor input[name='tablecolor']").forEach(input => {
+    input.addEventListener("change", function () {
+      localStorage.setItem("tablecolor", this.value);
+    });
+  });
+
+    });
+
+  // Reset gamble stats
+  document.getElementById("resetStatsBtn").addEventListener("click", () => {
+    localStorage.setItem("gamblecash", 100);
+    const keys = ['gamblegames', 'gamblewins', 'gamblepushes', 'avpay'];
+    keys.forEach(id => {
+      localStorage.setItem(id, 0);
+    });
+
+
+  loadGambleStats();
+});
+
+ whiteBalanceSlider.addEventListener('input', e => {
+      updateCardWhiteBalance(e.target.value);
+});
+
+function updateCardWhiteBalance(opacity) {
+   document.documentElement.style.setProperty('--card-texture-opacity', opacity);
+   adjustWhiteText();
+   localStorage.setItem('cardWhiteBalance', opacity);
+}
+
+const dragTarget = document.getElementById("gambleBox");
+const dragHandle = document.getElementById("gambleTitleBar");
+
+let offsetX = 0, offsetY = 0, isDragging = false;
+
+// Restore previous position
+const savedX = localStorage.getItem("gambleX");
+const savedY = localStorage.getItem("gambleY");
+const savedW = localStorage.getItem("gambleW");
+  const gamble_group1 = [
+    document.querySelector('.bet'),
+    document.querySelector('.cash'),
+    document.querySelector('.payout')  ];
+  const gamble_group2 = [
+    document.querySelector('.stat-group'),
+    document.querySelector('.avg')  ];
+if (savedX !== null && savedY !== null) {
+  dragTarget.style.left = savedX + "px";
+  dragTarget.style.top = savedY + "px";
+  if (savedW === "1"){   switch_gamble_horizontal() }
+  else{ switch_gamble_vertical() }
+}
+
+function switch_gamble_vertical(){
+    dragTarget.style.width = '190px';
+    unwrapElements('gamble-group-left');
+    unwrapElements('gamble-group-right');
+    ObjById('gambleBox').classList.remove('horizontal');
+	ObjById('gambleBox').classList.add('vertical');
+}
+function switch_gamble_horizontal(){
+    dragTarget.style.width = '550px';
+    wrapElements(gamble_group1, 'gamble-group-left');
+	wrapElements(gamble_group2, 'gamble-group-right');
+    ObjById('gambleBox').classList.remove('vertical');
+	ObjById('gambleBox').classList.add('horizontal');
+}
+
+dragHandle.addEventListener("dblclick", (e) => {
+  const currentWidth = getComputedStyle(dragTarget).width;
+  if (parseFloat(currentWidth) >= 550) {
+    switch_gamble_vertical();
+	localStorage.setItem('gambleW', 0);
+  } else {
+    switch_gamble_horizontal();
+	localStorage.setItem('gambleW', 1);
+  }
+});
+
+dragHandle.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  offsetX = e.clientX - dragTarget.offsetLeft;
+  offsetY = e.clientY - dragTarget.offsetTop;
+});
+
+document.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+
+  const maxX = window.innerWidth - dragTarget.offsetWidth;
+  const maxY = window.innerHeight - dragTarget.offsetHeight;
+
+  let x = e.clientX - offsetX;
+  let y = e.clientY - offsetY;
+
+  x = Math.max(0, Math.min(x, maxX));
+  y = Math.max(0, Math.min(y, maxY));
+
+  dragTarget.style.left = x + "px";
+  dragTarget.style.top = y + "px";
+
+});
+
+document.addEventListener("mouseup", () => {
+  if (isDragging) {
+    isDragging = false;
+    localStorage.setItem("gambleX", parseInt(dragTarget.style.left));
+    localStorage.setItem("gambleY", parseInt(dragTarget.style.top));
+  }
+});
+
+
+
+  loadGambleStats();
+</script>
 
 </body>
 </html>

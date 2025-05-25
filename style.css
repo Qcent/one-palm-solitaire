@@ -1,0 +1,456 @@
+:root {
+  --table-color-base: #2e8b57;
+  --table-color-highlight: #3cb371;
+  --table-color-mid-highlight: #3cb371;
+  --table-color-shadow: #1e5c3a;
+  --table-color-dark-shadow: 1a5028;
+}
+body {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  z-index: 1;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url(tabletexture.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat;
+  opacity: 0.32; /* change this for more or less transparency */
+  z-index: -1; /* ensure it stays behind all content */
+  pointer-events: none; /* so it doesn't block clicks */
+}
+
+#shuffle-button {
+  position:relative;
+  z-index: 1
+  width: 220px;
+  height: 70px;
+  margin-top: 2rem;
+  margin-left: 2rem;
+  padding: 1rem 2rem;
+  padding-right: 2.6rem;
+  font-size: 2rem;
+  font-weight: bold;
+  font-family: "Tekton Pro Bold", sans-serif;
+  background: var(--table-color-mid-highlight);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 6px var(--table-color-shadow);
+  transition: transform 0.1s ease, box-shadow 0.1s ease, background-color 0.3s;
+}
+
+#shuffle-button:hover {
+  dbackground-color: #3cb371; /* lighter green */
+  background: var(--table-color-highlight);
+}
+
+#shuffle-button:active {
+  transform: translateY(3px);
+  box-shadow: 0 3px var(--table-color-dark-shadow);
+}
+#shuffle-icon {
+  position: relative;
+  top: 0.2rem;
+  width: 28px;
+  height: 28px;
+}
+
+@keyframes zoomRotate {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.15) rotate(180deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+}
+
+#shuffle-icon.animate {
+  animation: zoomRotate 0.4s linear;
+}
+
+.playingcard {
+  width: 220px;
+  height: 300px;
+  border-radius: 14px;
+  background-color: white;
+  border: 1px solid #444;
+  box-shadow: 2px 4px 6px rgba(88, 88, 88, 0.08);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Georgia', serif;
+  font-size: 2rem;
+  color: #000;
+  user-select: none;
+  cursor:pointer;
+  transition: transform 0.3s ease, top 0.3s ease, left 0.3s ease;
+}
+.playingcard::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  background-image: url(cardtexture.png);
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat;
+  mix-blend-mode: darken;
+  opacity: var(--card-texture-opacity, 0.2);
+  z-index: 10; /* ensure it ontop of all content */
+  pointer-events: none;
+}
+.playingcard.flip-x::after {
+   transform: scaleX(-1);
+ }
+ .playingcard.rotate::after  { transform: rotate(180deg); }
+
+.suitbox { font-size:70px; line-height:25px; height:300px; width:220px; text-align: center;}
+
+.face { font-size:80px; }
+.ace { font-size:110px; }
+
+.heart 	 { color:#a01609; }
+.diamond { color:#0c296d; }
+.club 	 { color:#0c6d19; }
+.spade	 { color:#111111; }
+
+.flag {	
+	font-size:30px;		text-align:center;	line-height:25px;
+	width:25px;		position:absolute;	left:10px;	top:15px;}
+.reverseflag {	
+		font-size:30px;	text-align:center;	line-height:25px;
+		width:25px;	position:absolute;	left:182px; top:238px;	    
+		-ms-transform: rotate(180deg); /* IE 9 */
+   		-webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+    		transform: rotate(180deg);}
+
+.card-count-ticker {font-family: "Trebuchet MS", sans-serif;}
+.cardsindeckticker{position:absolute;	left:14px; top:564px;}
+.cardsinspreadticker{position:absolute;	left:300px; top:564px;}
+
+.playablemoves{z-index:125; padding:7px; font-family:arial; font-size:18px; color:#000000; position:absolute; right:40px; top:40px;}
+.playedmoves{font-family:arial; font-size:18px; color:#000000; position:absolute; right:40px; top:140px;}
+
+.scorebox {
+  font-family: 'Georgia', serif;
+  font-size: 28px;
+  color: 9f6c09;
+  text-shadow: 0 0 6px #DF6B26;
+  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black background */
+  padding: 10px 20px;
+  border: 3px solid var(--table-color-shadow);
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(1, 5, 4, 0.5);
+  z-index: 125;
+  position: absolute;
+  left: 50px;
+  top: 125px;
+  text-align: center;
+  min-width: 120px;
+}
+
+#multo {font-family:arial; font-size:18px; color:#ffcc00; }
+
+#winning {font-family:arial; font-size:32px; font-weight:bold; color:#ffcc00; display:none;}
+#losing {font-family:arial; font-size:28px; font-weight:bold; display:none;}
+#displaytext {font-family:arial; font-size:18px; font-weight:bold; color:#000000; }
+
+
+.gamble-titlebar {
+  flex: 1 1 100%;
+  background: #2e2e34;
+  color: #e0e0e0;
+  padding: 4px;
+  cursor: move;
+  text-align: center;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  margin: -16px -16px 8px;
+}
+
+.gamblemode input[type="text"] {
+  width: 80px;
+  padding: 4px;
+  border: none;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  text-align: right;
+  background: #888;
+  position:relative;
+  top:.3rem;
+}
+
+.gamblemode {
+  z-index:200;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  position:absolute;	right:240px; top:10px;
+  background-color: #1e1e2f;
+  color: #f0f0f0;
+  padding: 16px 16px 8px;
+  border-radius: 12px;
+  width: 190px;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+}
+
+.gamble-item {
+  display: flex;
+  flex:1;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 120px;
+  max-width: 190px;
+  margin-bottom: 5px;
+}
+
+.gamble-group-right .gamble-item{
+  width: 200px;
+  max-width: 200px;
+}
+
+.gamble-group-left,
+.gamble-group-right{
+  display: flex;
+  flex-direction: column;
+
+}
+
+.stat-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 6px;
+  flex: 1;
+}
+
+.stat-sub {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  text-align:center;
+}
+
+
+.label {
+  font-weight: 600;
+  color: #ccc;
+}
+
+.payout-box {
+  background: linear-gradient(145deg, #12120a, #1a1608);
+  background-size: 200% 200%;
+  animation: bgSlide 25s ease infinite;
+  font-weight: bold;
+  font-size: 1.4em;
+  text-align: center;
+  padding: 10px 15px;
+  border-radius: 10px;
+  border-color: #121222;
+  margin-top: 12px;
+  box-shadow: 0 0 10px rgba(100, 100, 100, 0.3);
+}
+
+.gamblemode.horizontal {
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: flex-start;
+}
+
+.gamblemode.vertical {
+  flex-direction: column;
+}
+
+
+.bet       { order: 1; }
+.cash      { order: 2; }
+.stat-group { order: 3; }
+.avg       { order: 4; }
+.payout    { order: 5; }
+
+
+.optclicker {cursor:pointer; position:absolute; right:35px; top:5px; font-family:arial; font-size:22px; font-weight:bold;}
+
+/* Container styling */
+.optbox {
+  z-index:300;
+  display: none;
+  position: absolute;
+  top: 0;
+  right: -112px;
+  transform: translateX(-50%);
+  width: 320px;
+  max-width: 320px;
+  background: #1e1e1e;
+  color: #f0f0f0;
+  font-family: "Trebuchet MS", sans-serif;
+  font-weight: bold;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.4s ease;
+}
+
+/* Slide-down animation class */
+.optbox.show {
+  display: block;
+  opacity: 1;
+  transform: translateX(-50%) translateY(20px);
+}
+
+/* Inner elements */
+.optbox #gamblecheck{
+  cursor:pointer;
+}
+span:has(#gamblecheck) {
+  font-weight: normal;
+}
+
+.optbox label {
+  font-weight: normal;
+  margin-top: 10px;
+  display: block;
+}
+
+#whiteBalanceSlider,
+.optbox select{
+  margin: 5px 0;
+  padding: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  cursor:pointer;
+}
+
+.optbox input[type="radio"] {
+  margin-right: 6px;
+  font-size:1rem;
+  cursor:pointer;
+}
+
+.optbox input[type="color"] {
+  position:relative;
+  top: .35rem;
+  padding:0px;
+  height:1.5rem;
+  cursor:pointer;
+}
+
+.optbox hr {
+  border: 1px solid #666;
+  margin: 10px 0;
+}
+
+/* Section titles */
+.optbox span.heart,
+.optbox span.diamond,
+.optbox span.spade,
+.optbox span.club {
+  display: block;
+  margin-top: 4px;
+}
+
+#gamblin-opts span{
+  display: flex;
+  justify-content: space-evenly;
+}
+.option-btn {
+  display: inline-block;
+  margin: 6px 4px;
+  padding: 4px 12px;
+  background: #444;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.option-btn:hover {
+  background: #666;
+}
+.option-btn:active {
+  background: #999;
+  transform: translateY(1px);
+}
+
+/* Close button */
+#opt-close-btn {
+  cursor: pointer;
+  font-size: 20px;
+  position: absolute;
+  right: 5px;
+  bottom: 7px;
+  color: #ccc;
+}
+#opt-close-btn:hover {
+  color: #fff;
+}
+
+.inline-text-icon{
+position:relative;
+top:-0.05rem;
+left:.1rem;
+}
+
+.golden-text {
+    color: #ffd700; 
+    text-shadow:
+        0 0 2px rgba(255, 215, 0, 0.4),
+        0 0 4px rgba(255, 215, 0, 0.4),
+        0 0 10px rgba(255, 215, 0, 0.4),
+        0 0 20px rgba(255, 215, 0, 0.4),
+        0 0 40px rgba(255, 215, 0, 0.4);
+    animation: goldenGlow 1.5s infinite alternate;
+}
+
+@keyframes goldenGlow {
+    0% {
+        text-shadow:
+            0 0 2px rgba(255, 215, 0, 0.3),
+            0 0 4px rgba(255, 215, 0, 0.3),
+            0 0 10px rgba(255, 215, 0, 0.3),
+            0 0 20px rgba(255, 215, 0, 0.2),
+            0 0 40px rgba(255, 215, 0, 0.1);
+    }
+    100% {
+        text-shadow:
+            0 0 4px rgba(255, 215, 0, 0.8),
+            0 0 9px rgba(255, 215, 0, 0.8),
+            0 0 19px rgba(255, 215, 0, 0.6),
+            0 0 36px rgba(255, 215, 0, 0.4),
+            0 0 55px rgba(255, 215, 0, 0.2);
+    }
+}
+
+@keyframes bgSlide {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
+	}
