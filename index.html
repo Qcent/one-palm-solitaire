@@ -640,13 +640,7 @@ K&clubs;
 	</div>
 </div>
 
-
-
-
-
-
 <div class='playablemoves' id='pamov'> </div>
-
 <div class='playedmoves' id='pdmov'> </div>
 
 <div class='optclicker' id='optclicker' onclick="toggleOptbox()">&#9881;</div>
@@ -679,29 +673,29 @@ Deck:<br>
   <input type="radio" name="deckcolor" value="3" onclick="set_deck_color(this.value);"> Custom<br>
 <span style="position:relative; left:30px; top:5px;">
 <span style='display:inline-block; text-align:center;'>
-		<input id='cusdekcolor1' type="color" value="ef15b9"
+		<input id='cusdekcolor1' type="color" value="#ef15b9"
 			   onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;">
 <br>
 <span class='heart' style="font-size:26px">&hearts;</span>
 </span>
 
 <span style='display:inline-block; text-align:center;'>
-	<input id='cusdekcolor2' type="color" value="731efc"
-		   onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;">
+	<input id='cusdekcolor2' type="color" value="#731efc"
+		   onchange="ObjById('deckcolor')[2].checked=true;">
 <br>
 <span class='diamond' style="font-size:26px">&diams;</span>
 </span>
 
 <span style='display:inline-block; text-align:center;'>
-	<input id='cusdekcolor3' type="color" value="74ef15"
-		   onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;">
+	<input id='cusdekcolor3' type="color" value="#74ef15"
+		   onchange="ObjById('deckcolor')[2].checked=true;">
 <br>
 <span class='spade' style="font-size:26px">&spades;</span>
 </span>
 
 <span style='display:inline-block; text-align:center;'>
-	<input id='cusdekcolor4' type="color" value="ff6a00"
-		   onchange="set_deck_color(3);ObjById('deckcolor')[2].checked=true;">
+	<input id='cusdekcolor4' type="color" value="#ff6a00"
+		   onchange="ObjById('deckcolor')[2].checked=true;">
 <br>
 <span class='club' style="font-size:26px">&clubs;</span>
 </span>
@@ -709,7 +703,7 @@ Deck:<br>
 
 <div class="option-row">
 	<label for="whiteBalanceSlider">White Balance</label>
-	<input type="range" id="whiteBalanceSlider" min="0" max="0.48" step="0.02" value="0.2">
+	<input type="range" id="whiteBalanceSlider" min="0" max="0.48" step="0.02" value="0.0">
 </div>
 
 
@@ -718,9 +712,9 @@ Deck:<br>
 Table:<br>
 	<label>Colour</label>
 <form id='tablecolor' action="">
-  <input type="radio" name="tablecolor" value="1" onclick="set_table_color('6ABD38');" checked> Default<br>
+  <input type="radio" name="tablecolor" value="1" onclick="set_table_color('#6ABD38'); localStorage.setItem('tablecolor', '1');" checked> Default<br>
   <input type="radio" name="tablecolor" value="3" onclick="set_table_color(ObjById('custabcolor').value);"> 
-	<input id='custabcolor' type="color" value="#a4cce3"
+	<input id='custabcolor' type="color" value="#003f5e"
 		   onchange="set_table_color(this.value); ObjById('tablecolor')[1].checked = true; localStorage.setItem('custabcolor', this.value); localStorage.setItem('tablecolor', '3');">
 
 </form>
@@ -729,18 +723,20 @@ Table:<br>
 onclick="toggleOptbox()"><span class="inline-text-icon">&#x2297;</span> Close</span>
 </div>
 
+<span id="text-logo"></span>
+
 <script>
 	document.addEventListener("DOMContentLoaded", function () {
 
 	 // Gamblin' checkbox
   const gambleCheck = document.getElementById("gamblecheck");
   const gambleSaved = localStorage.getItem("GAMBLIN");
-  if (gambleSaved !== null) {
+
     gambleCheck.checked = gambleSaved === "true";
     document.getElementById("gambleBox").style.display = gambleCheck.checked ? "" : "none";
     document.getElementById("gamblin-opts").style.display = gambleCheck.checked ? "" : "none";
     window.GAMBLIN = gambleSaved;
-  }
+
 
   // Card back picker
   const cardBackPicker = document.getElementById("cardBackPicker");
@@ -748,7 +744,10 @@ onclick="toggleOptbox()"><span class="inline-text-icon">&#x2297;</span> Close</s
   if (savedBack) {
     cardBackPicker.value = savedBack;
     window.cardBack = savedBack;
-  }
+  }else{
+    cardBackPicker.value = 'back-1.png';
+    window.cardBack = 'back-1.png';
+    }
 
   // Suit color radio
   const savedDeckColor = localStorage.getItem("deckcolor");
@@ -756,13 +755,22 @@ onclick="toggleOptbox()"><span class="inline-text-icon">&#x2297;</span> Close</s
     const radio = document.querySelector(`#deckcolor input[value="${savedDeckColor}"]`);
     if (radio) radio.checked = true;
     set_deck_color(savedDeckColor);
+  }else{
+    const radio = document.querySelector(`#deckcolor input[value="1"]`);
+    if (radio){
+     radio.checked = true;
+     set_deck_color(1);
+    }
   }
 
   //  Custom suit colors
+  const defaultCustCol = ["#ef15b9", "#00e600", "#00cece", "#ff6a22" ];
   for (let i = 1; i <= 4; i++) {
     const key = `cusdekcolor${i}`;
     const val = localStorage.getItem(key);
-    if (val) document.getElementById(key).value = val;
+
+    if (val !== null) { document.getElementById(key).value = val;}
+    else { document.getElementById(key).value = defaultCustCol[i-1];  }
   }
 
   // Card texture opacity
@@ -778,17 +786,18 @@ onclick="toggleOptbox()"><span class="inline-text-icon">&#x2297;</span> Close</s
   if (savedTableColor) {
     const radio = document.querySelector(`#tablecolor input[value="${savedTableColor}"]`);
     if (radio) radio.checked = true;
-
     if (savedTableColor === "3") {
       const customColor = localStorage.getItem("custabcolor");
       if (customColor) {
         document.getElementById("custabcolor").value = customColor;
         set_table_color(customColor);
+      } else {
+        set_table_color("#6ABD38"); // default
       }
-    } else {
-      set_table_color("6ABD38"); // default
     }
-  }
+  }else {
+      set_table_color("#6ABD38"); // default
+    }
 
        // Save GAMBLIN
   document.getElementById("gamblecheck").addEventListener("change", function () {
@@ -817,6 +826,8 @@ onclick="toggleOptbox()"><span class="inline-text-icon">&#x2297;</span> Close</s
     const id = `cusdekcolor${i}`;
     document.getElementById(id).addEventListener("change", function () {
       localStorage.setItem(id, this.value);
+      localStorage.setItem("deckcolor", '3')
+      set_deck_color(3);
     });
   }
 
@@ -837,13 +848,12 @@ onclick="toggleOptbox()"><span class="inline-text-icon">&#x2297;</span> Close</s
       localStorage.setItem(id, 0);
     });
 
-
-  loadGambleStats();
-});
+    loadGambleStats();
+  });
 
  whiteBalanceSlider.addEventListener('input', e => {
       updateCardWhiteBalance(e.target.value);
-});
+  });
 
 function updateCardWhiteBalance(opacity) {
    document.documentElement.style.setProperty('--card-texture-opacity', opacity);
@@ -908,7 +918,6 @@ dragHandle.addEventListener("mousedown", (e) => {
 
 document.addEventListener("mousemove", (e) => {
   if (!isDragging) return;
-
   const maxX = window.innerWidth - dragTarget.offsetWidth;
   const maxY = window.innerHeight - dragTarget.offsetHeight;
 
@@ -920,7 +929,6 @@ document.addEventListener("mousemove", (e) => {
 
   dragTarget.style.left = x + "px";
   dragTarget.style.top = y + "px";
-
 });
 
 document.addEventListener("mouseup", () => {
@@ -931,9 +939,7 @@ document.addEventListener("mouseup", () => {
   }
 });
 
-
-
-  loadGambleStats();
+loadGambleStats();
 </script>
 
 </body>

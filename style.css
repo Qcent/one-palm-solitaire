@@ -1,4 +1,5 @@
 :root {
+  --table-max-width: 1360px;
   --table-color-base: #2e8b57;
   --table-color-highlight: #3cb371;
   --table-color-mid-highlight: #3cb371;
@@ -6,10 +7,13 @@
   --table-color-dark-shadow: 1a5028;
 }
 body {
+  overflow: hidden;
+  width: var(--table-max-width);
+  min-width: 1090px;
+  height: 730px;
   position: relative;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
   z-index: 1;
 }
 
@@ -24,9 +28,22 @@ body::before {
   background-size: cover;
   background-position: center;
   background-repeat: repeat;
-  opacity: 0.32; /* change this for more or less transparency */
-  z-index: -1; /* ensure it stays behind all content */
-  pointer-events: none; /* so it doesn't block clicks */
+  opacity: 0.32;
+  z-index: -1;
+  pointer-events: none;
+}
+
+#text-logo{
+  width: 800px;
+  height: 100px;
+  position: absolute;
+  top: 580px;
+  left: 540px;
+  background-image: url(db.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  mix-blend-mode: darken;
+  opacity: 0.22;
 }
 
 #shuffle-button {
@@ -112,14 +129,14 @@ body::before {
   background-position: center;
   background-repeat: repeat;
   mix-blend-mode: darken;
-  opacity: var(--card-texture-opacity, 0.2);
-  z-index: 10; /* ensure it ontop of all content */
+  opacity: var(--card-texture-opacity, 0.0);
+  z-index: 10;
   pointer-events: none;
 }
 .playingcard.flip-x::after {
    transform: scaleX(-1);
  }
- .playingcard.rotate::after  { transform: rotate(180deg); }
+.playingcard.rotate::after  { transform: rotate(180deg); }
 
 .suitbox { font-size:70px; line-height:25px; height:300px; width:220px; text-align: center;}
 
@@ -145,7 +162,27 @@ body::before {
 .cardsindeckticker{position:absolute;	left:14px; top:564px;}
 .cardsinspreadticker{position:absolute;	left:300px; top:564px;}
 
-.playablemoves{z-index:125; padding:7px; font-family:arial; font-size:18px; color:#000000; position:absolute; right:40px; top:40px;}
+.optclicker {
+  cursor:pointer;
+  position:absolute;
+  left: min(100vw - 30px, var(--table-max-width) - 30px);
+  top:5px;
+  font-family:arial;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.playablemoves{
+  z-index:125;
+  position:absolute;
+  top:40px;
+  left: min(100vw - 230px, var(--table-max-width) - 230px);
+  mmargin-right:7px;
+  padding:7px;
+  font-family:arial;
+  font-size:18px;
+  color:#000000;
+ }
 .playedmoves{font-family:arial; font-size:18px; color:#000000; position:absolute; right:40px; top:140px;}
 
 .scorebox {
@@ -192,17 +229,17 @@ body::before {
   border-radius: 4px;
   margin-bottom: 10px;
   text-align: right;
-  background: #888;
+  background: #aaa;
   position:relative;
   top:.3rem;
 }
 
 .gamblemode {
   z-index:200;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-  position:absolute;	right:240px; top:10px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  position:absolute;	left: calc(100vw - 600px); top:21px;
   background-color: #1e1e2f;
   color: #f0f0f0;
   padding: 16px 16px 8px;
@@ -232,7 +269,6 @@ body::before {
 .gamble-group-right{
   display: flex;
   flex-direction: column;
-
 }
 
 .stat-group {
@@ -280,23 +316,12 @@ body::before {
   flex-direction: column;
 }
 
-
-.bet       { order: 1; }
-.cash      { order: 2; }
-.stat-group { order: 3; }
-.avg       { order: 4; }
-.payout    { order: 5; }
-
-
-.optclicker {cursor:pointer; position:absolute; right:35px; top:5px; font-family:arial; font-size:22px; font-weight:bold;}
-
-/* Container styling */
 .optbox {
   z-index:300;
   display: none;
   position: absolute;
-  top: 0;
-  right: -112px;
+  top: 1;
+  left: min(100vw - 196px, var(--table-max-width) - 196px);
   transform: translateX(-50%);
   width: 320px;
   max-width: 320px;
@@ -312,14 +337,16 @@ body::before {
   transition: opacity 0.3s ease, transform 0.4s ease;
 }
 
-/* Slide-down animation class */
 .optbox.show {
   display: block;
   opacity: 1;
   transform: translateX(-50%) translateY(20px);
 }
 
-/* Inner elements */
+#gamblecash::before,
+#avpay::before{
+  content:'$';
+}
 .optbox #gamblecheck{
   cursor:pointer;
 }
@@ -395,7 +422,6 @@ span:has(#gamblecheck) {
   transform: translateY(1px);
 }
 
-/* Close button */
 #opt-close-btn {
   cursor: pointer;
   font-size: 20px;
@@ -409,20 +435,20 @@ span:has(#gamblecheck) {
 }
 
 .inline-text-icon{
-position:relative;
-top:-0.05rem;
-left:.1rem;
+  position:relative;
+  top:-0.05rem;
+  left:.1rem;
 }
 
 .golden-text {
-    color: #ffd700; 
-    text-shadow:
-        0 0 2px rgba(255, 215, 0, 0.4),
-        0 0 4px rgba(255, 215, 0, 0.4),
-        0 0 10px rgba(255, 215, 0, 0.4),
-        0 0 20px rgba(255, 215, 0, 0.4),
-        0 0 40px rgba(255, 215, 0, 0.4);
-    animation: goldenGlow 1.5s infinite alternate;
+  color: #ffd700;
+  text-shadow:
+    0 0 2px rgba(255, 215, 0, 0.4),
+    0 0 4px rgba(255, 215, 0, 0.4),
+    0 0 10px rgba(255, 215, 0, 0.4),
+    0 0 20px rgba(255, 215, 0, 0.4),
+    0 0 40px rgba(255, 215, 0, 0.4);
+  animation: goldenGlow 1.5s infinite alternate;
 }
 
 @keyframes goldenGlow {

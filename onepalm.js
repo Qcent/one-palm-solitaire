@@ -57,6 +57,74 @@ function getUniqueRanks(r){
    }
    return a.length;
 };
+function hasConsecutiveSequenceCyclic(arr, length, max = 13) {
+  const uniqueVals = new Set();
+  const dupicateVals = [];
+  let countPass = 0;
+
+  for (let item of arr) {
+    const val = value_of(item);
+    if (uniqueVals.has(val)) {
+      dupicateVals.push(item);
+    } else {
+      uniqueVals.add(val);
+    }
+  }
+
+  const sorted = Array.from(uniqueVals).sort((a, b) => a - b);
+
+  for (let i = 0; i < sorted.length; i++) {
+    let count = 1;
+    let current = sorted[i];
+
+    for (let j = 1; j < length; j++) {
+      const nextVal = (current + j - 1) % max + 1;
+      if (!uniqueVals.has(nextVal)) break;
+      count++;
+    }
+
+    if (count === length) return true;
+    countPass = count;
+  }
+
+  if (dupicateVals.length >= length-countPass) {
+    return hasConsecutiveSequenceCyclic(dupicateVals, length-countPass, max);
+  }
+
+  return false;
+}
+
+function hasConsecutiveSequenceCyclicOG(arr, sequenceLength) {
+  const MAX = 13;
+
+  // Map array to numeric values using value_of and deduplicate
+  let values = [...new Set(arr.map(value_of))];
+
+  // Handle wrap-around by adding values shifted by +MAX
+  // So e.g. 12,13,1,2 becomes 12,13,14,15
+  const extended = [...values, ...values.map(v => v + MAX)];
+
+  // Sort and check for consecutive sequences
+  const sorted = extended.sort((a, b) => a - b);
+
+  for (let i = 0; i <= sorted.length - sequenceLength; i++) {
+    let isConsecutive = true;
+    for (let j = 1; j < sequenceLength; j++) {
+      if (sorted[i + j] !== sorted[i] + j) {
+        isConsecutive = false;
+        break;
+      }
+    }
+    // Only count if all elements in the sequence are from 1–13
+    const originalValues = sorted.slice(i, i + sequenceLength).map(v => ((v - 1) % MAX) + 1);
+    if (isConsecutive && originalValues.every(v => values.includes(v))) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 
 function sortval(a,b) { return b[1] - a[1]; }
 function sortord(a,b) { return a[2] - b[2]; }
@@ -89,7 +157,7 @@ function detect_runs()
 	{
 		breakdown=run.slice()
 		breakdown.sort(sortval)
-
+console.log(breakdown)
 		while (breakdown[0][1] - breakdown[run.length-1][1] > 11 && run.length < 13 && breakdown[0][1] <= 13)
 		{
 
@@ -121,28 +189,46 @@ function analyze_spread()
 {	
     var runlong=0
 	var multi4cards=0
+	var c=card_combo_chain.length=0
 
-	card_combo_chain.length=0
-
-	detect_runs(); var c=card_combo_chain.length;
-
-	var textOutput_moves = ObjById("pamov").innerHTML;
-
-  if (c)	{  // if run was detected
-	runlong = (card_combo_chain[0].length);	
-
-	if ( getUniqueSuits(spread.slice(-runlong)) == 1 ) /// if also a flush
-	  {
-		score_combo[0]= (runlong*185);
-		textOutput_moves = runlong+" Card Straight Flush <br>";	  }
-	else{
-		score_combo[0]= (runlong*105);
-		textOutput_moves = runlong+" Card Straight <br>";	  }
-    }
-  else 	{	textOutput_moves = ''; }
+	var textOutput_moves = '';
+	ObjById('pamov').style.backgroundColor="transparent";
 
 if (spread.length >= 4){
-    if (spread[spread.length-1].charAt(1) == spread[(spread.length-2)].charAt(1) && spread[spread.length-1].charAt(1) == spread[(spread.length-3)].charAt(1))
+
+////////// new straight/ straightFlush detection
+let highStraight, highStr8Flush = 0;
+for (var q=4; q<spread.length+1; q++){
+  if(hasConsecutiveSequenceCyclic(spread.slice(-q), q)){ // we have straight of length q
+    //add cards to playable hand
+    card_combo_chain[c] = new Array()
+    for (var y=0;y<q;y++){
+      card_combo_chain[c][y] = spread[spread.length-(y+1)];
+    }
+    if ( getUniqueSuits(spread.slice(-q)) == 1 ) {
+      // we got a straight flush
+      highStr8Flush = q;
+      //console.log(q+" Card Straight Flush detected at: "+spread[spread.length-q]);
+      score_combo[c] = q*185;
+    }else{
+      highStraight = q;
+      if(q==4){ multi4cards++; } // could be a rainbow
+      //console.log(q+" Card Straight detected at: "+spread[spread.length-q]);
+      score_combo[c] = q*105;
+    }
+    c++;
+  }
+}
+if(highStr8Flush > 3){
+  textOutput_moves += highStr8Flush+" Card Straight Flush <br>";}
+  
+if (highStraight > 3){
+    textOutput_moves += highStraight+" Card Straight <br>";	  }
+card_combo_chain.reverse(); // new method works backwards to old method so we must reverse the output
+///////////////////
+
+    if (spread[spread.length-1].charAt(1) == spread[(spread.length-2)].charAt(1) && spread[spread.length-1].charAt(1) == spread[(spread.length-3)].charAt(1) &&
+      spread[spread.length-3].charAt(1) == spread[(spread.length-4)].charAt(1) )
     {//Four of a Kind
         textOutput_moves += "Four of A Kind <br>"
         score_combo[c] = 950
@@ -152,9 +238,7 @@ if (spread.length >= 4){
     }
 	else if (spread[spread.length-1].charAt(1) == spread[(spread.length-3)].charAt(1) && spread[spread.length-2].charAt(1) == spread[(spread.length-4)].charAt(1))
 	{//One-Two One-Two
-
 		textOutput_moves += "One-Two One-Two <br>"
-
 		score_combo[c] = 550
 
 		card_combo_chain[c] = new Array(spread[spread.length-1],spread[spread.length-2],spread[spread.length-3],spread[spread.length-4])
@@ -168,9 +252,8 @@ if (spread.length >= 4){
               {
                     textOutput_moves += "Mirror Mirror <br>"
                     score_combo[c] = 600
-                    multi4cards++;
               }
-            //THE SHOCKER
+               //THE SHOCKER
             else if (spread[spread.length-2].charAt(1) == spread[spread.length-1].charAt(1) || spread[(spread.length-3)].charAt(1)== spread[spread.length-1].charAt(1))
               {
                     textOutput_moves += name_of(spread[spread.length-1])+"'s Shocker \u26A1<br>"
@@ -179,11 +262,10 @@ if (spread.length >= 4){
     		else {
                 textOutput_moves += "Split Pair <br>"
                 score_combo[c] = 200
-
-                card_combo_chain[c] = new Array(spread[spread.length-1],spread[spread.length-2],spread[spread.length-3],spread[spread.length-4])
-                c++
-                multi4cards++; if (multi4cards>1) {score_combo[c-1]+=score_combo[c]*1.5;}
             }
+            card_combo_chain[c] = new Array(spread[spread.length-1],spread[spread.length-2],spread[spread.length-3],spread[spread.length-4])
+            c++
+            multi4cards++; if (multi4cards>1) {score_combo[c-1]+=score_combo[c]*1.5;}
         }
         else if (spread[spread.length-4].charAt(1) == spread[(spread.length-2)].charAt(1) && spread[spread.length-4].charAt(0) == spread[(spread.length-3)].charAt(0) && spread[spread.length-2].charAt(0) == spread[(spread.length-1)].charAt(0))
     	{//Double Date
@@ -208,38 +290,27 @@ if (spread.length >= 4){
 	{ // Split Suits
 
 		textOutput_moves += "Split Suits <br>"
- 
 		score_combo[c] = 105
 		
 		card_combo_chain[c] = new Array(spread[spread.length-2],spread[spread.length-3])
 		c++
 
-	if (spread[spread.length-1].charAt(0) == spread[(spread.length-2)].charAt(0) && spread[spread.length-1].charAt(0) == spread[(spread.length-3)].charAt(0))
-	{//Four Card Flush
-
-		//if ( runlong >= 4) /// if also a straight
-		//  {
-		//	textOutput_moves += "Four Card Flush/Straight <br>"
-		//	score_combo[c] = 600
-		//  }
-
-		//else {
-
-		  textOutput_moves += "Four Card Flush <br>"
-
-		  score_combo[c] = 400
-		//}
-
-		card_combo_chain[c] = new Array(spread[spread.length-1],spread[spread.length-2],spread[spread.length-3],spread[spread.length-4])
-		multi4cards++; if (multi4cards>1) {score_combo[c-1]+=score_combo[c]*1.5;}
-		c++
-	}}
+        if (spread[spread.length-1].charAt(0) == spread[(spread.length-2)].charAt(0) && spread[spread.length-1].charAt(0) == spread[(spread.length-3)].charAt(0)){
+          //Four Card Flush
+          if( highStr8Flush < 4 ) {
+              textOutput_moves += "Four Card Flush <br>"
+              score_combo[c] = 400
+              card_combo_chain[c] = new Array(spread[spread.length-1],spread[spread.length-2],spread[spread.length-3],spread[spread.length-4])
+              multi4cards++; if (multi4cards>1) {score_combo[c-1]+=score_combo[c]*1.5;}
+              c++
+          }
+	    }
+	}
 
     if ( getUniqueSuits(spread.slice(-4)) == 4)
     {//Rainbow
        //if ( spread.length==4 && CARDCOUNT==52){ null; } /// not allowed to win with a rainbow
        //else{
-
         multi4cards++;
         score_combo[c] = 50*(multi)*multi4cards;
         textOutput_moves += '<span style="color:red;">R</span><span style="color:orange;">a</span><span style="color:yellow;">i</span><span style="color:green;">n</span><span style="color:blue;">b</span><span style="color:indigo;">o</span><span style="color:violet;">w</span><br>'
@@ -247,26 +318,23 @@ if (spread.length >= 4){
         card_combo_chain[c] = new Array(spread[spread.length-1],spread[spread.length-2],spread[spread.length-3],spread[spread.length-4])
         if (multi4cards>1){score_combo[c-1]+=score_combo[c]*1.5;}
         c++
-
       //}
     }
+    if (multi4cards>1) { textOutput_moves += "<span class='golden-text'>Multi Hand Bonus!!</span><br>" }
 }
 
 if (spread.length >=3 && spread[spread.length-1].charAt(1) == spread[(spread.length-3)].charAt(1) && spread[spread.length-1].charAt(1) == spread[(spread.length-2)].charAt(1))
 	{//Three of a Kind
-	
 		textOutput_moves += "Three of a Kind <br>"
 		score_combo[c] = 775
 
 		card_combo_chain[c] = new Array(spread[spread.length-1],spread[spread.length-2],spread[spread.length-3])
 		c++
-
 	}
 
 if (spread.length >=2){
 	if (spread[spread.length-1].charAt(1) == spread[(spread.length-2)].charAt(1))
 	{//Pair
-
 		textOutput_moves += "Pair <br>"
 		score_combo[c] = 100
 
@@ -275,20 +343,20 @@ if (spread.length >=2){
 	}
 }
 
-
 ////////
-	
 	if (ObjById('pamov').innerHTML!=''){
-	  //ObjById('pamov').style.zIndex= CARDCOUNT+53
 	  if (window.innerWidth < 1030) {
         ObjById('pamov').style.backgroundColor= document.body.style.backgroundColor
+        if (getContrastRatio(rgbStringToHex(document.body.style.backgroundColor), "#000000") < 4.5) {
+          // change dark text to light text
+            ObjById('pamov').style.color = ObjById('shuffle-button').style.color;
+        }
       }
       else{
         ObjById('pamov').style.backgroundColor="transparent";
+        ObjById('pamov').style.color = "#000000";
       }
 	}
-
- 	if (multi4cards>1) { textOutput_moves += "<span class='golden-text'>Multi Hand Bonus!!</span><br>" }
  	ObjById("pamov").innerHTML = textOutput_moves;
 ////////
 		
@@ -324,7 +392,6 @@ if( (CARDCOUNT==52 && spread.length <=4 && card_combo_chain.length == 0) || book
 			ObjById("displaytext").firstChild.nodeValue= "Two Can Tango...";
 			//ObjById('winning').innerHTML = "-Stalemate-";
 			//SPLITEND=1;
-
 			//if(GAMBLIN){ gamblincash += parseInt(gamblinbet/2); }
 		}
 	}	
@@ -347,7 +414,6 @@ if( (CARDCOUNT==52 && spread.length <=4 && card_combo_chain.length == 0) || book
 			ObjById("displaytext").firstChild.nodeValue= "Wingers" ; 
 			//ObjById('winning').innerHTML = "-Stalemate-";
 			//SPLITEND=1;
-
 	  	    }
 		   //if(GAMBLIN){ gamblincash += parseInt(gamblinbet/2); }
 		 }
@@ -387,10 +453,7 @@ if( (CARDCOUNT==52 && spread.length <=4 && card_combo_chain.length == 0) || book
             }
            else{ ObjById("displaytext").firstChild.nodeValue= "Awkward Situation"; }
        }
-
 	}
-
-
 }
 
 
@@ -472,7 +535,6 @@ function refresh_spread()
 	}
 
 	analyze_spread()
-
 	update_stats()
 }
 
@@ -649,8 +711,6 @@ function shuffle_deck()
 //  "HA","H2","H3","H4","H5","H6","H7","H8","H9","H0","HJ","HQ","HK",
 //  "SA","S2","S3","S4","S5","S6","S7","S8","S9","S0","SJ","SQ","SK" ];
 
- // deck = [  "CA","C2","C3","C4","C5","C6","C7","C8","C9","C0","CJ","CQ","CK",  "DA","D2","D3","D4","D5","D6","D7","D8","D9","D0","DJ","DQ","DK",
- // "HA","H2","H3","H4","H5","H6","H7","H8","H9","H0","HJ","HQ","HK",  "SA","S2","S3","S4","S5","S6","S7","S8","S9","S0","SJ","SQ","SK" ];
 /////////////////////////////////
 }
 
@@ -970,6 +1030,27 @@ function unwrapElements(wrapperClass) {
 
 
 /////// Color Transfomation
+function getLuminance(hex) {
+  const rgb = hex.match(/\w\w/g).map(c => parseInt(c, 16) / 255);
+  const [r, g, b] = rgb.map(c =>
+    c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+  );
+  return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+}
+
+function getContrastRatio(bgColor, textColor) {
+  const L1 = getLuminance(bgColor);
+  const L2 = getLuminance(textColor);
+  return (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05);
+  // Usage:
+  //const ratio = getContrastRatio("#ffffff", "#000000"); // 21 (perfect contrast)
+  //if (ratio < 4.5) {
+    // Not accessible
+  //}
+}
+
+
+
 function hexToHSL(hex) {
   let r = parseInt(hex.slice(1, 3), 16) / 255;
   let g = parseInt(hex.slice(3, 5), 16) / 255;
@@ -1059,7 +1140,7 @@ function generateHighlightShadow(hex) {
 }
 
 function adjustWhiteText(){
-   whiteText = getComputedStyle(ObjById('shuffle-button')).color.toLowerCase();
+  // whiteText = getComputedStyle(ObjById('shuffle-button')).color.toLowerCase();
  //  if (whiteText === "rgb(255, 255, 255)" || whiteText === '#ffffff') {
    //  whiteText = blendTowards(hexToRgb('#ffffff'),hexToRgb('#008800'), whiteBalanceSlider.value*1.5 );
    //  whiteText = blendTowards(whiteText,hexToRgb('#000000'), whiteBalanceSlider.value/1*whiteBalanceSlider.value );
@@ -1122,6 +1203,11 @@ function rgbToHex({ r, g, b }) {
     const hex = Math.max(0, Math.min(255, Math.round(v))).toString(16);
     return hex.length === 1 ? '0' + hex : hex;
   }).join('');
+}
+
+function rgbStringToHex(rgbStr) {
+  const [r, g, b] = rgbStr.match(/\d+/g).map(Number);
+  return rgbToHex({r, g, b});
 }
 
 function getBrightness({ r, g, b }) {
