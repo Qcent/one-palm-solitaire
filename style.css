@@ -5,12 +5,30 @@
   --table-color-mid-highlight: #3cb371;
   --table-color-shadow: #1e5c3a;
   --table-color-dark-shadow: 1a5028;
+  --card-back-hue: 0deg;
 }
+
+@media (min-aspect-ratio: 16/12) {
+
+  /* wider than */
+  :root {
+    --table-max-width: 100vw;
+  }
+}
+
+@media (max-aspect-ratio: 16/9) {
+
+  /* square or portrait screens */
+  :root {
+    --table-max-width: 1360px;
+  }
+}
+
 body {
   overflow: hidden;
-  width: var(--table-max-width);
+  max-width: var(--table-max-width);
   min-width: 1090px;
-  height: 730px;
+  min-height: 730px;
   position: relative;
   margin: 0;
   padding: 0;
@@ -33,13 +51,26 @@ body::before {
   pointer-events: none;
 }
 
-#text-logo{
-  width: 800px;
-  height: 100px;
+#cards-logo {
+  width: 180px;
+  height: 400px;
   position: absolute;
-  top: 580px;
+  top: 528px;
+  left: 783px;
+  background-image: url(cardsicon2.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  mix-blend-mode: darken;
+  opacity: 0.13;
+}
+
+#text-logo {
+  width: 800px;
+  height: 311px;
+  position: absolute;
+  top: 482px;
   left: 540px;
-  background-image: url(db.png);
+  background-image: url(dblogo.png);
   background-size: contain;
   background-repeat: no-repeat;
   mix-blend-mode: darken;
@@ -47,8 +78,8 @@ body::before {
 }
 
 #shuffle-button {
-  position:relative;
-  z-index: 1
+  position: relative;
+  z-index: 1;
   width: 220px;
   height: 70px;
   margin-top: 2rem;
@@ -68,7 +99,6 @@ body::before {
 }
 
 #shuffle-button:hover {
-  dbackground-color: #3cb371; /* lighter green */
   background: var(--table-color-highlight);
 }
 
@@ -76,6 +106,7 @@ body::before {
   transform: translateY(3px);
   box-shadow: 0 3px var(--table-color-dark-shadow);
 }
+
 #shuffle-icon {
   position: relative;
   top: 0.2rem;
@@ -87,9 +118,11 @@ body::before {
   0% {
     transform: scale(1) rotate(0deg);
   }
+
   50% {
     transform: scale(1.15) rotate(180deg);
   }
+
   100% {
     transform: scale(1) rotate(360deg);
   }
@@ -113,10 +146,12 @@ body::before {
   font-size: 2rem;
   color: #000;
   user-select: none;
-  cursor:pointer;
+  cursor: pointer;
   transition: transform 0.3s ease, top 0.3s ease, left 0.3s ease;
 }
-.playingcard::after {
+
+.playingcard::after,
+#cardPreview::after {
   content: "";
   position: fixed;
   top: 0;
@@ -133,64 +168,125 @@ body::before {
   z-index: 10;
   pointer-events: none;
 }
+
 .playingcard.flip-x::after {
-   transform: scaleX(-1);
- }
-.playingcard.rotate::after  { transform: rotate(180deg); }
-
-.suitbox { font-size:70px; line-height:25px; height:300px; width:220px; text-align: center;}
-
-.face { font-size:80px; }
-.ace { font-size:110px; }
-
-.heart 	 { color:#a01609; }
-.diamond { color:#0c296d; }
-.club 	 { color:#0c6d19; }
-.spade	 { color:#111111; }
-
-.flag {	
-	font-size:30px;		text-align:center;	line-height:25px;
-	width:25px;		position:absolute;	left:10px;	top:15px;}
-.reverseflag {	
-		font-size:30px;	text-align:center;	line-height:25px;
-		width:25px;	position:absolute;	left:182px; top:238px;	    
-		-ms-transform: rotate(180deg); /* IE 9 */
-   		-webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
-    		transform: rotate(180deg);}
-
-.card-count-ticker {font-family: "Trebuchet MS", sans-serif;}
-.cardsindeckticker{position:absolute;	left:14px; top:564px;}
-.cardsinspreadticker{position:absolute;	left:300px; top:564px;}
-
-.optclicker {
-  cursor:pointer;
-  position:absolute;
-  left: min(100vw - 30px, var(--table-max-width) - 30px);
-  top:5px;
-  font-family:arial;
-  font-size:22px;
-  font-weight:bold;
+  transform: scaleX(-1);
 }
 
-.playablemoves{
-  z-index:125;
-  position:absolute;
-  top:40px;
+.playingcard.rotate::after {
+  transform: rotate(180deg);
+}
+
+.suitbox {
+  font-size: 70px;
+  line-height: 25px;
+  height: 300px;
+  width: 220px;
+  text-align: center;
+}
+
+.face {
+  font-size: 80px;
+}
+
+.ace {
+  font-size: 110px;
+}
+
+.heart {
+  color: #a01609;
+}
+
+.diamond {
+  color: #0c296d;
+}
+
+.club {
+  color: #0c6d19;
+}
+
+.spade {
+  color: #111111;
+}
+
+.flag {
+  font-size: 30px;
+  text-align: center;
+  line-height: 25px;
+  width: 25px;
+  position: absolute;
+  left: 10px;
+  top: 15px;
+}
+
+.reverseflag {
+  font-size: 30px;
+  text-align: center;
+  line-height: 25px;
+  width: 25px;
+  position: absolute;
+  left: 182px;
+  top: 238px;
+  -ms-transform: rotate(180deg);
+  /* IE 9 */
+  -webkit-transform: rotate(180deg);
+  /* Chrome, Safari, Opera */
+  transform: rotate(180deg);
+}
+
+.card-count-ticker {
+  font-family: "Trebuchet MS", sans-serif;
+}
+
+.cardsindeckticker {
+  position: absolute;
+  left: 14px;
+  top: 564px;
+}
+
+.cardsinspreadticker {
+  position: absolute;
+  left: 300px;
+  top: 564px;
+}
+
+.optclicker {
+  cursor: pointer;
+  position: absolute;
+  left: min(100vw - 30px, var(--table-max-width) - 30px);
+  top: 5px;
+  font-family: arial;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.playablemoves {
+  z-index: 125;
+  position: absolute;
+  top: 40px;
   left: min(100vw - 230px, var(--table-max-width) - 230px);
-  mmargin-right:7px;
-  padding:7px;
-  font-family:arial;
-  font-size:18px;
-  color:#000000;
- }
-.playedmoves{font-family:arial; font-size:18px; color:#000000; position:absolute; right:40px; top:140px;}
+  padding: 7px;
+  font-family: arial;
+  font-size: 18px;
+  color: #000000;
+}
+
+.playedmoves {
+  font-family: arial;
+  font-size: 18px;
+  color: #000000;
+  position: absolute;
+  right: 40px;
+  top: 140px;
+}
 
 .scorebox {
   font-family: 'Georgia', serif;
   font-size: 28px;
   color: 9f6c09;
   text-shadow: 0 0 6px #DF6B26;
-  background-color: rgba(0, 0, 0, 0.5); /* semi-transparent black background */
+  background-color: rgba(0, 0, 0, 0.5);
+  /* semi-transparent black background */
   padding: 10px 20px;
   border: 3px solid var(--table-color-shadow);
   border-radius: 8px;
@@ -203,11 +299,33 @@ body::before {
   min-width: 120px;
 }
 
-#multo {font-family:arial; font-size:18px; color:#ffcc00; }
+#multo {
+  font-family: arial;
+  font-size: 18px;
+  color: #ffcc00;
+}
 
-#winning {font-family:arial; font-size:32px; font-weight:bold; color:#ffcc00; display:none;}
-#losing {font-family:arial; font-size:28px; font-weight:bold; display:none;}
-#displaytext {font-family:arial; font-size:18px; font-weight:bold; color:#000000; }
+#winning {
+  font-family: arial;
+  font-size: 32px;
+  font-weight: bold;
+  color: #ffcc00;
+  display: none;
+}
+
+#losing {
+  font-family: arial;
+  font-size: 28px;
+  font-weight: bold;
+  display: none;
+}
+
+#displaytext {
+  font-family: arial;
+  font-size: 18px;
+  font-weight: bold;
+  color: #000000;
+}
 
 
 .gamble-titlebar {
@@ -230,16 +348,18 @@ body::before {
   margin-bottom: 10px;
   text-align: right;
   background: #aaa;
-  position:relative;
-  top:.3rem;
+  position: relative;
+  top: .3rem;
 }
 
 .gamblemode {
-  z-index:200;
+  z-index: 200;
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  position:absolute;	left: calc(100vw - 600px); top:21px;
+  position: absolute;
+  left: calc(100vw - 600px);
+  top: 21px;
   background-color: #1e1e2f;
   color: #f0f0f0;
   padding: 16px 16px 8px;
@@ -251,7 +371,7 @@ body::before {
 
 .gamble-item {
   display: flex;
-  flex:1;
+  flex: 1;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -260,13 +380,13 @@ body::before {
   margin-bottom: 5px;
 }
 
-.gamble-group-right .gamble-item{
+.gamble-group-right .gamble-item {
   width: 200px;
   max-width: 200px;
 }
 
 .gamble-group-left,
-.gamble-group-right{
+.gamble-group-right {
   display: flex;
   flex-direction: column;
 }
@@ -283,7 +403,7 @@ body::before {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  text-align:center;
+  text-align: center;
 }
 
 
@@ -317,7 +437,7 @@ body::before {
 }
 
 .optbox {
-  z-index:300;
+  z-index: 300;
   display: none;
   position: absolute;
   top: 1;
@@ -331,7 +451,7 @@ body::before {
   font-weight: bold;
   padding: 15px;
   border-radius: 8px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
   overflow: hidden;
   opacity: 0;
   transition: opacity 0.3s ease, transform 0.4s ease;
@@ -344,12 +464,14 @@ body::before {
 }
 
 #gamblecash::before,
-#avpay::before{
-  content:'$';
+#avpay::before {
+  content: '$';
 }
-.optbox #gamblecheck{
-  cursor:pointer;
+
+.optbox #gamblecheck {
+  cursor: pointer;
 }
+
 span:has(#gamblecheck) {
   font-weight: normal;
 }
@@ -360,27 +482,28 @@ span:has(#gamblecheck) {
   display: block;
 }
 
+#cardDesignColorSlider,
 #whiteBalanceSlider,
-.optbox select{
+.optbox select {
   margin: 5px 0;
   padding: 5px;
   width: 100%;
   box-sizing: border-box;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .optbox input[type="radio"] {
   margin-right: 6px;
-  font-size:1rem;
-  cursor:pointer;
+  font-size: 1rem;
+  cursor: pointer;
 }
 
 .optbox input[type="color"] {
-  position:relative;
+  position: relative;
   top: .35rem;
-  padding:0px;
-  height:1.5rem;
-  cursor:pointer;
+  padding: 0px;
+  height: 1.5rem;
+  cursor: pointer;
 }
 
 .optbox hr {
@@ -388,19 +511,51 @@ span:has(#gamblecheck) {
   margin: 10px 0;
 }
 
-/* Section titles */
-.optbox span.heart,
-.optbox span.diamond,
-.optbox span.spade,
-.optbox span.club {
-  display: block;
-  margin-top: 4px;
+#deckcolor {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
 }
 
-#gamblin-opts span{
+#suitColorRaidoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width:68%;
+}
+
+#cardPreview {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0 12px;
+  border: #000 1px solid;
+  max-width: 78px;
+  max-height: 80px;
+  padding: 4px 11px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  margin-left: auto; /* Push to right */
+}
+
+#custColorContainer {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 12px;
+  align-self: flex-end;
+}
+
+#cardPreview span {
+  font-size: 37px;
+  margin-top: -5px;
+}
+
+#gamblin-opts span {
   display: flex;
   justify-content: space-evenly;
 }
+
 .option-btn {
   display: inline-block;
   margin: 6px 4px;
@@ -417,6 +572,7 @@ span:has(#gamblecheck) {
 .option-btn:hover {
   background: #666;
 }
+
 .option-btn:active {
   background: #999;
   transform: translateY(1px);
@@ -430,14 +586,15 @@ span:has(#gamblecheck) {
   bottom: 7px;
   color: #ccc;
 }
+
 #opt-close-btn:hover {
   color: #fff;
 }
 
-.inline-text-icon{
-  position:relative;
-  top:-0.05rem;
-  left:.1rem;
+.inline-text-icon {
+  position: relative;
+  top: -0.05rem;
+  left: .1rem;
 }
 
 .golden-text {
@@ -452,31 +609,35 @@ span:has(#gamblecheck) {
 }
 
 @keyframes goldenGlow {
-    0% {
-        text-shadow:
-            0 0 2px rgba(255, 215, 0, 0.3),
-            0 0 4px rgba(255, 215, 0, 0.3),
-            0 0 10px rgba(255, 215, 0, 0.3),
-            0 0 20px rgba(255, 215, 0, 0.2),
-            0 0 40px rgba(255, 215, 0, 0.1);
-    }
-    100% {
-        text-shadow:
-            0 0 4px rgba(255, 215, 0, 0.8),
-            0 0 9px rgba(255, 215, 0, 0.8),
-            0 0 19px rgba(255, 215, 0, 0.6),
-            0 0 36px rgba(255, 215, 0, 0.4),
-            0 0 55px rgba(255, 215, 0, 0.2);
-    }
+  0% {
+    text-shadow:
+      0 0 2px rgba(255, 215, 0, 0.3),
+      0 0 4px rgba(255, 215, 0, 0.3),
+      0 0 10px rgba(255, 215, 0, 0.3),
+      0 0 20px rgba(255, 215, 0, 0.2),
+      0 0 40px rgba(255, 215, 0, 0.1);
+  }
+
+  100% {
+    text-shadow:
+      0 0 4px rgba(255, 215, 0, 0.8),
+      0 0 9px rgba(255, 215, 0, 0.8),
+      0 0 19px rgba(255, 215, 0, 0.6),
+      0 0 36px rgba(255, 215, 0, 0.4),
+      0 0 55px rgba(255, 215, 0, 0.2);
+  }
 }
 
 @keyframes bgSlide {
-	0% {
-		background-position: 0% 50%;
-	}
-	50% {
-		background-position: 100% 50%;
-	}
-	100% {
-		background-position: 0% 50%;
-	}
+  0% {
+    background-position: 0% 50%;
+  }
+
+  50% {
+    background-position: 100% 50%;
+  }
+
+  100% {
+    background-position: 0% 50%;
+  }
+}
